@@ -31,12 +31,17 @@ export interface Cart {
     price: number;
 }
 
-export interface Order {
+export interface OrderAddresses {
     payment: string;
     address: string;
+}
+
+export interface OrderContacts {
     email: string;
     phone: number;
 }
+
+export interface Order extends OrderAddresses, OrderContacts{}
 
 export interface OrderResult {
     id: string;
