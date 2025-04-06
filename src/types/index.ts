@@ -36,7 +36,6 @@ export interface Order {
     address: string;
     email: string;
     phone: number;
-
 }
 
 export interface OrderResult {
@@ -44,20 +43,18 @@ export interface OrderResult {
     total: number;
 }
 
-//V
 
-export type FormErrors = Partial<Record<keyof IOrder, string>>;
-
+export type FormErrors = Partial<Record<keyof Order, string>>;
 
 
 
-//productApi.ts
+
+
 export type ApiListResponce<Type> = {
     total: number;
     items: Type[];
 }
 
-// Api.ts. Зачем оно?
 export enum EnumApiMethods {
     POST = 'POST',
     PUT = 'PUT', //надо?
@@ -70,13 +67,13 @@ export type ErrorState = {
 }
 
 
-//EventEmitter.ts.  зачем оно? 
+
 export type EventData = object;
 export type EventHandler = (args: EventData) => void;
 export type EventsMap = Map<string, Set<EventHandler>>;
 
 
-//View.ts. зачем оно? 
+
 export interface IView<T, S = object> {
     // отображение для заданного типа данных
     element: HTMLElement; // корневой элемент
