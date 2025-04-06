@@ -23,9 +23,13 @@ export interface ProductList {
 	items: Product[];
 }
 
-export interface Cart {
+export interface CartItem {
 	title: string;
 	price: number;
+}
+
+export interface Cart {
+	items: CartItem[];
 }
 
 export interface OrderAddresses {
