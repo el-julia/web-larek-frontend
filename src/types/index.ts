@@ -1,15 +1,13 @@
-export interface IProductItems {
+export interface LarekApi {
 	getProductList: () => Promise<ProductList>;
 	getProduct: (id: string) => Promise<Product>;
 	placeOrder: (order: Order) => Promise<OrderResult>;
 }
 
-// описание типа категории товара
 export type ProductCategory = {
 	category: 'софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил';
 };
 
-//описание интерфейса карточки товара
 export interface Product {
 	id: string;
 	description: string;
@@ -58,8 +56,8 @@ export type ApiListResponce<Type> = {
 
 export enum EnumApiMethods {
 	POST = 'POST',
-	PUT = 'PUT', //надо?
-	DELETE = 'DELETE', //надо?
+	PUT = 'PUT',
+	DELETE = 'DELETE',
 	GET = 'GET',
 }
 
@@ -71,40 +69,39 @@ export type EventData = object;
 export type EventHandler = (args: EventData) => void;
 export type EventsMap = Map<string, Set<EventHandler>>;
 
-export interface IView<T, S = object> {
-	// отображение для заданного типа данных
+export interface View<T, S = object> {
 	element: HTMLElement; // корневой элемент
-	copy(settings?: S): IView<T>; // копирующий конструктор
+	copy(settings?: S): View<T>; // копирующий конструктор
 	render(data?: Partial<T>): HTMLElement; // метод рендера
 }
 
-export interface IViewConstructor<T, S> {
+export interface ViewConstructor<T, S> {
 	// конструктор отображения
 	// получает на вход клонированный шаблон
 	// или существующий элемент,
 	// а также настройки для отображения
-	new (root: HTMLElement, settings: S): IView<T>;
+	new (root: HTMLElement, settings: S): View<T>;
 }
 
 // Чтобы события настраивались единообразно, пропишем их здесь
 
 // Настройки для кликабельного отображения (кнопки, карточки...)
-export type IClickableEvent<T> = { event: MouseEvent; item?: T };
+export type ClickableEvent<T> = { event: MouseEvent; item?: T };
 
-export interface IClickable<T> {
-	onClick: (args: IClickableEvent<T>) => void;
+export interface Clickable<T> {
+	onClick: (args: ClickableEvent<T>) => void;
 }
 
 // Настройки для изменяемого отображения (формы, переключатели...)
-export type IChangeableEvent<T> = { event: Event; value?: T };
+export type ChangeableEvent<T> = { event: Event; value?: T };
 
-export interface IChangeable<T> {
-	onChange: (args: IChangeableEvent<T>) => void;
+export interface Changeable<T> {
+	onChange: (args: ChangeableEvent<T>) => void;
 }
 
 // Настройки для выбираемого отображения (списки, таблицы...)
-export type ISelectableEvent<T> = { event: Event; value?: T };
+export type SelectableEvent<T> = { event: Event; value?: T };
 
-export interface ISelectable<T> {
-	onSelect: (args: ISelectableEvent<T>) => void;
+export interface Selectable<T> {
+	onSelect: (args: SelectableEvent<T>) => void;
 }
