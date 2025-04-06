@@ -39,6 +39,10 @@ export interface Order {
 
 }
 
+export interface OrderResult {
+    id: string;
+    total: number;
+}
 
 //V
 
