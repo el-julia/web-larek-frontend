@@ -8,6 +8,7 @@ export type ProductCategory = {
 	category: 'софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил';
 };
 
+// интерфейс описывающий один наш продукт
 export interface Product {
 	id: string;
 	description: string;
