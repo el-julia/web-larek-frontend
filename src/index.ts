@@ -3,7 +3,10 @@ import { ProductModel } from './components/ProductModel';
 import { LarekApi } from './components/LarekApi';
 import { API_URL } from './utils/constants';
 
-const productModel = new ProductModel();
+import { EventEmitter } from './components/base/Events';
+
+const events = new EventEmitter();
+const productModel = new ProductModel(events);
 
 const api = new LarekApi(API_URL);
 
@@ -13,3 +16,4 @@ api.getProductList()
 		console.log(productModel);
 	})
 	.catch(error => {console.log(error)});
+
