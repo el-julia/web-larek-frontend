@@ -1,8 +1,8 @@
-export interface LarekApi {
-	getProductList: () => Promise<ProductList>;
-	getProduct: (id: string) => Promise<Product>;
-	placeOrder: (order: Order) => Promise<OrderResult>;
-}
+//export interface LarekApi {
+	// getProductList: () => Promise<ProductList>;
+	// getProduct: (id: string) => Promise<Product>;
+	// placeOrder: (order: Order) => Promise<OrderResult>;
+//}
 
 export type ProductCategory = {
 	category: 'софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил';

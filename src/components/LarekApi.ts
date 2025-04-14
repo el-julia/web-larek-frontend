@@ -1,5 +1,5 @@
 import { Api } from './base/Api';
-import { Order, OrderResult, Product, ProductList } from '../types';
+import { OrderResult, ProductList } from '../types';
 
 export class LarekApi extends Api {
 	//получаем массив товаров с сервера

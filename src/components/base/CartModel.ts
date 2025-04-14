@@ -1,4 +1,4 @@
-import { Cart, CartItem, Product } from '../../types';
+import { Cart, CartItem } from '../../types';
 
 // @ToDo добавить в документацию
 export class CartModel implements Cart {
@@ -13,3 +13,4 @@ export class CartModel implements Cart {
 		this.items = this.items.filter(item => item.id !== id);
 	}
 
+}
