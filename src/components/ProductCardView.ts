@@ -1,6 +1,8 @@
 import { Component } from './base/Component';
 import { ensureElement } from '../utils/utils';
 import { Product } from '../types';
+import { EventEmitter } from './base/Events';
+import { CDN_URL } from '../utils/constants';
 
 export class ProductCard extends Component<Product> {
 	protected productCategory: HTMLElement;
@@ -8,7 +10,7 @@ export class ProductCard extends Component<Product> {
 	protected productImage: HTMLImageElement;
 	protected productPrice: HTMLElement;
 
-	constructor(container: HTMLElement) {
+	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
 		this.productCategory = ensureElement('.card__category', this.container);
 		this.productTitle = ensureElement('.card__title', this.container);
@@ -25,7 +27,7 @@ export class ProductCard extends Component<Product> {
 	}
 
 	set image(value: string) {
-		this.setImage(this.productImage, value);
+		this.setImage(this.productImage, `${CDN_URL}${value}`);
 	}
 
 	set price(value: number) {
