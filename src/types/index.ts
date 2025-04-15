@@ -54,10 +54,6 @@ export interface OrderResult {
 
 export type FormErrors = Partial<Record<keyof Order, string>>;
 
-export type ApiListResponce<Type> = {
-	total: number;
-	items: Type[];
-};
 
 export enum EnumApiMethods {
 	POST = 'POST',
@@ -71,3 +67,4 @@ export type ErrorState = {
 };
 
 
+export class ApiListResponce {}

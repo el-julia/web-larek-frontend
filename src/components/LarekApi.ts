@@ -1,15 +1,27 @@
-import { Api } from './base/Api';
-import { OrderResult, ProductList } from '../types';
+import { Api, ApiListResponse } from './base/Api';
+import { OrderResult, Product } from '../types';
+
 
 export class LarekApi extends Api {
-	//получаем массив товаров с сервера
+	readonly cdn: string;
 
-	getProductList(): Promise<ProductList> {
-		return this.get<ProductList>('/product/');
+	constructor(cdn: string, baseUrl: string, options?: RequestInit) {
+		super(baseUrl, options);
+		this.cdn = cdn;
 	}
 
-	placeOrder(order: OrderResult): Promise<OrderResult> {
-		return this.post<OrderResult>('/order', order, 'POST');
+	getProductList(): Promise<Product[]> {
+		return this.get('/product/').then((data: ApiListResponse<Product>) =>
+			data.items.map((item: Product) => ({
+				...item,
+				image: this.cdn + item.image
+			}))
+		);
+	}
 
+	orderProducts(order: OrderResult): Promise<OrderResult> {
+		return this.post('/order', order).then(
+		(data: OrderResult) => data
+		);
 	}
 }
