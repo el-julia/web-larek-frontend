@@ -8,6 +8,7 @@ import { Page } from './components/Page';
 import { AppState, CatalogChangeEvent } from './components/AppData';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Card } from './components/Card';
+import { Modal } from './components/common/Modal';
 
 //
 
@@ -17,30 +18,37 @@ const api = new LarekApi(CDN_URL, API_URL);
 // шаблоны
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 
-
 const page = new Page(document.body, events);
 
 // модель данных приложения
-const appData = new AppState({}, events)
+const appData = new AppState({}, events);
+
+const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
 // получаем товары с сервера
-api.getProductList()
+api
+	.getProductList()
 	.then(appData.setCatalog.bind(appData))
-	.catch(error => {console.error(error);
+	.catch((error) => {
+		console.error(error);
 	});
 
+// рендерим список товаров на странице
 events.on<CatalogChangeEvent>('items:changed', () => {
-	page.catalog = appData.catalog.map(item => {
+	page.catalog = appData.catalog.map((item) => {
 		const card = new Card(cloneTemplate(cardCatalogTemplate), {
-			onClick: () => events.emit('card:select', item)
+			onClick: () => events.emit('card:select', item),
 		});
 		return card.render({
 			productCategory: item.category,
 			productTitle: item.title,
 			productImage: item.image,
-			productPrice: item.price
+			productPrice: item.price,
 		});
 	});
-
-
 });
+
+
+// открыть товар
+
+events.on('card:select', (item) => {})

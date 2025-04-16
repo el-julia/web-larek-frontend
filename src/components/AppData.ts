@@ -5,6 +5,12 @@ export type CatalogChangeEvent = {
 	catalog: Product[]
 };
 
+
+export class ProductItem extends Model<Product> {
+
+}
+
+
 export class AppState extends Model<any> {
 	catalog: Product[];
 
