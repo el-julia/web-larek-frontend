@@ -10,5 +10,6 @@ export class AppState extends Model<any> {
 
 	setCatalog(items: Product[]) {
 		this.catalog = items;
+		this.emitChanges('items:changed', { catalog: items });
 	}
 }

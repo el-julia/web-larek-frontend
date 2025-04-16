@@ -29,7 +29,7 @@ export class Card<T> extends Component<ICard<T>> {
 		this.title = ensureElement<HTMLElement>('.card__title', container);
 		this.image = ensureElement<HTMLImageElement>('.card__image', container);
 		this.price = ensureElement<HTMLElement>('.card__price', container);
-		this.text = ensureElement<HTMLElement>('.card__text', container);
+		this.text = container.querySelector('.card__text') || undefined;
 		this.button = container.querySelector('.card__button');
 
 
@@ -59,7 +59,7 @@ export class Card<T> extends Component<ICard<T>> {
 	}
 
 	set productImage(value: string) {
-		this.setImage(this.image, value, this.title)
+		this.setImage(this.image, value, this.productTitle)
 	}
 
 	set productCategory(value: string) {

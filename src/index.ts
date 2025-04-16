@@ -6,12 +6,17 @@ import { API_URL, CDN_URL } from './utils/constants';
 import { EventEmitter } from './components/base/Events';
 import { Page } from './components/Page';
 import { AppState, CatalogChangeEvent } from './components/AppData';
-import { cloneTemplate } from './utils/utils';
+import { cloneTemplate, ensureElement } from './utils/utils';
+import { Card } from './components/Card';
 
-
+//
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
+
+// шаблоны
+const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
+
 
 const page = new Page(document.body, events);
 
@@ -26,6 +31,16 @@ api.getProductList()
 
 events.on<CatalogChangeEvent>('items:changed', () => {
 	page.catalog = appData.catalog.map(item => {
-		const card = new CatalogItem(cloneTemplate(cardCatalogTemplate))
-	})
-})
+		const card = new Card(cloneTemplate(cardCatalogTemplate), {
+			onClick: () => events.emit('card:select', item)
+		});
+		return card.render({
+			productCategory: item.category,
+			productTitle: item.title,
+			productImage: item.image,
+			productPrice: item.price
+		});
+	});
+
+
+});
