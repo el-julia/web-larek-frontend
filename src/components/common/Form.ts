@@ -7,7 +7,7 @@ interface IformState {
 	errors: string[];
 }
 
-class Form<T> extends Component<IformState> {
+export class Form<T> extends Component<IformState> {
 	protected formSubmit:HTMLButtonElement;
 	protected formError:HTMLElement;
 

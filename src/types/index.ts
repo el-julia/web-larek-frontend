@@ -68,3 +68,8 @@ export type ErrorState = {
 
 
 export class ApiListResponce {}
+
+export interface IOrderForm {
+	address: string;
+	payment: 'card' | 'cash';
+}
