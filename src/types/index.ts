@@ -37,12 +37,12 @@ export interface OrderAddresses {
 	address: string;
 }
 
-export interface OrderContacts {
+export interface IContactForm {
 	email: string;
 	phone: number;
 }
 
-export interface Order extends OrderAddresses, OrderContacts {
+export interface Order extends OrderAddresses, IContactForm {
 	total: number;
 	"items": string[];
 }
