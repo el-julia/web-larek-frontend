@@ -5,7 +5,7 @@ import { API_URL, CDN_URL } from './utils/constants';
 
 import { EventEmitter } from './components/base/Events';
 import { Page } from './components/Page';
-import { AppState, CatalogChangeEvent } from './components/AppData';
+import { AppState, CatalogChangeEvent, ProductItem } from './components/AppData';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Card } from './components/Card';
 import { Modal } from './components/common/Modal';
@@ -50,5 +50,6 @@ events.on<CatalogChangeEvent>('items:changed', () => {
 
 
 // открыть товар
-
-events.on('card:select', (item) => {})
+events.on('card:select', (item: ProductItem) => {
+	appData.setPreview(item);
+});
