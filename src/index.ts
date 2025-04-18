@@ -49,6 +49,7 @@ events.on<CatalogChangeEvent>('items:changed', () => {
 });
 
 
+
 // открыть товар
 events.on('card:select', (item: ProductItem) => {
 	appData.setPreview(item);
