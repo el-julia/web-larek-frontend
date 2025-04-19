@@ -8,15 +8,15 @@ import { AppState } from './components/model/AppData';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Page } from './components/view/Page';
 import { Modal } from './components/view/Modal';
-import { Basket } from './components/view/Basket';
+import { Basket } from './components/view/basket/Basket';
 import { Success } from './components/view/Success';
 import { Product } from './types';
 import { ProductsEvents } from './components/events/ProductsEvents';
 import { Catalog } from './components/model/Catalog';
 import { ModalEvents } from './components/events/ModalEvents';
 import { CartEvents } from './components/events/CartEvents';
-import { CardCatalog } from './components/view/CardCatalog';
-import { CardPreview } from './components/view/CardPreview';
+import { CardCatalog } from './components/view/card/CardCatalog';
+import { CardPreview } from './components/view/card/CardPreview';
 import { Cart } from './components/model/Cart';
 
 const events = new EventEmitter();

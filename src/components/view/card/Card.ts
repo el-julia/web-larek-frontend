@@ -1,5 +1,5 @@
-import { Component } from '../base/Component';
-import { ensureElement } from '../../utils/utils';
+import { Component } from '../../base/Component';
+import { ensureElement } from '../../../utils/utils';
 
 export interface ICardActions {
 	onClick: (event: MouseEvent) => void;

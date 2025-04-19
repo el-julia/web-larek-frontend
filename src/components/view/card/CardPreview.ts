@@ -1,5 +1,5 @@
 import { ICard, Card } from './Card';
-import { Product } from '../../types';
+import { Product } from '../../../types';
 
 
 export interface ICardPreview extends ICard {
