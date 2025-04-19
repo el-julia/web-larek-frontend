@@ -14,7 +14,7 @@ export interface ICard {
 	productDescription?: string;
 }
 
-export abstract class ProductCard<T extends ICard> extends Component<T> {
+export abstract class Card<T extends ICard> extends Component<T> {
 	protected category: HTMLElement;
 	protected title: HTMLElement;
 	protected image: HTMLImageElement;

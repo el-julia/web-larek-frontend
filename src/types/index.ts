@@ -1,17 +1,3 @@
-//export interface LarekApi {
-	// getProductList: () => Promise<ProductList>;
-	// getProduct: (id: string) => Promise<Product>;
-	// placeOrder: (order: Order) => Promise<OrderResult>;
-//}
-
-
-
-
-
-export interface ProductList {
-	items: Product[];
-}
-
 export interface CartItem {
 	title: string;
 	price: number;

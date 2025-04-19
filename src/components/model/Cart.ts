@@ -2,11 +2,11 @@ import { Model } from '../base/Model';
 import { Product } from '../../types';
 import { CartEvents } from '../events/CartEvents';
 
-export interface CartData {
+export interface ICart {
 	products: Product[];
 }
 
-export class Cart extends Model<CartData> {
+export class Cart extends Model<ICart> {
 	private products: Product[] = [];
 
 	getProducts(): Product[] {

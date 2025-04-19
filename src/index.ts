@@ -12,11 +12,11 @@ import { Basket } from './components/view/Basket';
 import { Success } from './components/view/Success';
 import { Product } from './types';
 import { ProductsEvents } from './components/events/ProductsEvents';
-import { Products } from './components/model/Products';
+import { Catalog } from './components/model/Catalog';
 import { ModalEvents } from './components/events/ModalEvents';
 import { CartEvents } from './components/events/CartEvents';
-import { ProductCardCatalog } from './components/view/ProductCardCatalog';
-import { ProductCardPreview } from './components/view/ProductCardPreview';
+import { CardCatalog } from './components/view/CardCatalog';
+import { CardPreview } from './components/view/CardPreview';
 import { Cart } from './components/model/Cart';
 
 const events = new EventEmitter();
@@ -32,12 +32,12 @@ const page = new Page(document.body, events);
 
 // модель данных приложения
 const appData = new AppState({}, events);
-const productsModel = new Products({}, events);
+const productsModel = new Catalog({}, events);
 const cartModel = new Cart({}, events);
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), events);
-let productCardPreview: ProductCardPreview;
+let productCardPreview: CardPreview;
 
 // получаем товары с сервера
 api
@@ -52,7 +52,7 @@ api
 // рендерим список товаров на странице
 events.on(ProductsEvents.CHANGED, (products: Product[]) => {
 	page.catalog = products.map((product) => {
-		const card = new ProductCardCatalog(cloneTemplate(cardCatalogTemplate), {
+		const card = new CardCatalog(cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit(ModalEvents.PRODUCT_PREVIEW, product),
 		});
 
@@ -68,7 +68,7 @@ events.on(ProductsEvents.CHANGED, (products: Product[]) => {
 
 // открыт выбранный товар
 events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
-	productCardPreview = new ProductCardPreview(cloneTemplate(cardPreviewTemplate), {
+	productCardPreview = new CardPreview(cloneTemplate(cardPreviewTemplate), {
 		onClick: () => events.emit(CartEvents.ADD, product),
 	});
 

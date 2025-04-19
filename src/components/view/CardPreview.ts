@@ -1,4 +1,4 @@
-import { ICard, ProductCard } from './ProductCard';
+import { ICard, Card } from './Card';
 import { Product } from '../../types';
 
 
@@ -6,7 +6,7 @@ export interface ICardPreview extends ICard {
 	cartProducts: Product[];
 }
 
-export class ProductCardPreview extends ProductCard<ICardPreview> {
+export class CardPreview extends Card<ICardPreview> {
 	private priceless = false;
 
 	set productPrice(price: number) {
