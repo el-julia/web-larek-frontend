@@ -68,13 +68,30 @@ events.on('preview:changed', (item: ProductItem) => {
 				productTitle: item.title,
 				productImage: item.image,
 				productDescription: item.description,
-
-
 			})
 		});
 	};
 	if (item) {
-		api.
+		api.getProductItem(item.id)
+			.then((result) => {
+				item.description = result.description;
+				showItem(item);
+			})
+			.catch((err) => {
+				console.error(err);
+			})
+	} else {
+		modal.close();
 	}
+});
 
-})
+
+// Блокируем прокрутку страницы если открыта модалка
+events.on('modal:open', () => {
+	page.locked = true;
+});
+
+// ... и разблокируем
+events.on('modal:close', () => {
+	page.locked = false;
+});
