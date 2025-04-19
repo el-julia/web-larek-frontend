@@ -3,7 +3,7 @@ import { Product } from '../../../types';
 
 
 export interface ICardPreview extends ICard {
-	cartProducts: Product[];
+	basketProducts: Product[];
 }
 
 export class CardPreview extends Card<ICardPreview> {

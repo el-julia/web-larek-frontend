@@ -8,16 +8,16 @@ import { AppState } from './components/model/AppData';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Page } from './components/view/Page';
 import { Modal } from './components/view/Modal';
-import { Basket } from './components/view/basket/Basket';
 import { Success } from './components/view/Success';
 import { Product } from './types';
 import { ProductsEvents } from './components/events/ProductsEvents';
 import { Catalog } from './components/model/Catalog';
 import { ModalEvents } from './components/events/ModalEvents';
-import { CartEvents } from './components/events/CartEvents';
+import { BasketEvents } from './components/events/BasketEvents';
 import { CardCatalog } from './components/view/card/CardCatalog';
 import { CardPreview } from './components/view/card/CardPreview';
-import { Cart } from './components/model/Cart';
+import { Basket as BasketModel } from './components/model/Basket';
+import { Basket } from './components/view/basket/Basket';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -33,7 +33,7 @@ const page = new Page(document.body, events);
 // модель данных приложения
 const appData = new AppState({}, events);
 const productsModel = new Catalog({}, events);
-const cartModel = new Cart({}, events);
+const basketModel = new BasketModel({}, events);
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), events);
@@ -69,7 +69,7 @@ events.on(ProductsEvents.CHANGED, (products: Product[]) => {
 // открыт выбранный товар
 events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
 	productCardPreview = new CardPreview(cloneTemplate(cardPreviewTemplate), {
-		onClick: () => events.emit(CartEvents.ADD, product),
+		onClick: () => events.emit(BasketEvents.ADD, product),
 	});
 
 	modal.render({
@@ -80,27 +80,27 @@ events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
 			productImage: product.image,
 			productDescription: product.description,
 			productPrice: product.price,
-			cartProducts: cartModel.getProducts(),
+			basketProducts: basketModel.getProducts(),
 		}),
 	});
 });
 
 // товар добавили в корзину
-events.on(CartEvents.ADD, (product: Product) => {
-	cartModel.add(product);
+events.on(BasketEvents.ADD, (product: Product) => {
+	basketModel.add(product);
 })
 
 // товар удалили из корзины
-events.on(CartEvents.REMOVE, (product: Product) => {
-	cartModel.remove(product);
+events.on(BasketEvents.REMOVE, (product: Product) => {
+	basketModel.remove(product);
 })
 
 // очищаем корзину
-events.on(CartEvents.CLEAR, () => {
-	cartModel.clear();
+events.on(BasketEvents.CLEAR, () => {
+	basketModel.clear();
 })
 
-events.on(CartEvents.CHANGED, (products: Product[]) => {
+events.on(BasketEvents.CHANGED, (products: Product[]) => {
 	page.counter = products.length;
 
 	productCardPreview.cartProducts = products;

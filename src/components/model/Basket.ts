@@ -1,12 +1,12 @@
 import { Model } from '../base/Model';
 import { Product } from '../../types';
-import { CartEvents } from '../events/CartEvents';
+import { BasketEvents } from '../events/BasketEvents';
 
-export interface ICart {
+export interface IBasket {
 	products: Product[];
 }
 
-export class Cart extends Model<ICart> {
+export class Basket extends Model<IBasket> {
 	private products: Product[] = [];
 
 	getProducts(): Product[] {
@@ -31,6 +31,6 @@ export class Cart extends Model<ICart> {
 	}
 
 	private cartChanged() {
-		this.emitChanges(CartEvents.CHANGED, this.products);
+		this.emitChanges(BasketEvents.CHANGED, this.products);
 	}
 }
