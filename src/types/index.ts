@@ -4,19 +4,9 @@
 	// placeOrder: (order: Order) => Promise<OrderResult>;
 //}
 
-export type ProductCategory = {
-	category: 'софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил';
-};
 
-// интерфейс описывающий один наш продукт
-export interface Product {
-	id: string;
-	description: string;
-	image: string;
-	title: string;
-	category: string;
-	price: number;
-}
+
+
 
 export interface ProductList {
 	items: Product[];
@@ -37,22 +27,16 @@ export interface OrderAddresses {
 	address: string;
 }
 
-export interface IContactForm {
-	email: string;
-	phone: number;
-}
+
 
 export interface Order extends OrderAddresses, IContactForm {
 	total: number;
 	"items": string[];
 }
 
-export interface OrderResult {
-	id: string;
-	total: number;
-}
 
-export type FormErrors = Partial<Record<keyof Order, string>>;
+
+
 
 
 export enum EnumApiMethods {
@@ -69,7 +53,45 @@ export type ErrorState = {
 
 export class ApiListResponce {}
 
+
+
+
+// точно использую
+
+// интерфейс описывающий один наш продукт
+export interface Product {
+	id: string;
+	description: string;
+	image: string;
+	title: string;
+	category: string;
+	price: number;
+}
+export interface OrderResult {
+	id: string;
+	total: number;
+}
+
+export interface IOrder extends IOrderForm, IContactForm {
+	items: string[];
+}
+
 export interface IOrderForm {
 	address: string;
-	payment: 'card' | 'cash';
+	payment: 'card' | 'cash' | null;
 }
+
+export interface IContactForm {
+	email: string;
+	phone: string;
+}
+
+export interface IAppState {
+	catalog: Product[];
+	basket: string[];
+	preview: string | null;
+	order: IOrder | null;
+	loading: boolean;
+}
+
+export type FormErrors = Partial<Record<keyof IOrder, string>>;

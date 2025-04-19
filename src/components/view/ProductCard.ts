@@ -1,12 +1,12 @@
-import { Component } from './base/Component';
-import { ensureElement } from '../utils/utils';
+import { Component } from '../base/Component';
+import { ensureElement } from '../../utils/utils';
 
-interface ICardActions {
+export interface ICardActions {
 	onClick: (event: MouseEvent) => void;
 }
 
-interface ICard<T> {
-
+export interface ICard {
+	productId: string;
 	productCategory: string;
 	productTitle: string;
 	productImage: string;
@@ -14,7 +14,7 @@ interface ICard<T> {
 	productDescription?: string;
 }
 
-export class Card<T> extends Component<ICard<T>> {
+export abstract class ProductCard<T extends ICard> extends Component<T> {
 	protected category: HTMLElement;
 	protected title: HTMLElement;
 	protected image: HTMLImageElement;
@@ -22,16 +22,14 @@ export class Card<T> extends Component<ICard<T>> {
 	protected description?: HTMLElement;
 	protected button?: HTMLButtonElement;
 
-
 	constructor(protected container: HTMLElement, actions?: ICardActions) {
 		super(container);
-		this.category = ensureElement<HTMLElement>('.card__category', container)
+		this.category = ensureElement<HTMLElement>('.card__category', container);
 		this.title = ensureElement<HTMLElement>('.card__title', container);
 		this.image = ensureElement<HTMLImageElement>('.card__image', container);
 		this.price = ensureElement<HTMLElement>('.card__price', container);
 		this.description = container.querySelector('.card__text');
 		this.button = container.querySelector('.card__button');
-
 
 		if (actions?.onClick) {
 			if (this.button) {
@@ -42,11 +40,11 @@ export class Card<T> extends Component<ICard<T>> {
 		}
 	}
 
-	set id(value: string) {
+	private set productId(value: string) {
 		this.container.dataset.id = value;
 	}
 
-	get id(): string {
+	get productId(): string {
 		return this.container.dataset.id || '';
 	}
 
@@ -59,20 +57,22 @@ export class Card<T> extends Component<ICard<T>> {
 	}
 
 	set productImage(value: string) {
-		this.setImage(this.image, value, this.productTitle)
+		this.setImage(this.image, value, this.productTitle);
 	}
 
 	set productCategory(value: string) {
 		this.setText(this.category, value);
 	}
 
-	set productPrice(value: string) {
-		this.setText(this.price, `${value} синапсов`);
+	set productPrice(price: number) {
+		if (price === null) {
+			this.setText(this.price, `Бесценно`);
+		} else {
+			this.setText(this.price, `${price} синапсов`);
+		}
 	}
 
 	set productText(value: string) {
 		this.setText(this.description, value);
 	}
-
-
 }

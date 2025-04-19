@@ -1,6 +1,6 @@
-import { Component } from './base/Component';
-import { ensureElement } from '../utils/utils';
-import { IEvents } from './base/Events';
+import { Component } from '../base/Component';
+import { ensureElement } from '../../utils/utils';
+import { IEvents } from '../base/Events';
 
 interface IPage {
 	counter: number;
@@ -36,6 +36,4 @@ export class Page extends Component<IPage> {
 			this.wrapper.classList.remove('page__wrapper_locked');
 		}
 	}
-
-
 }

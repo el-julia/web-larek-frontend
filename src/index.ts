@@ -1,17 +1,23 @@
 import './scss/styles.scss';
 
-import { LarekApi } from './components/LarekApi';
+import { LarekApi } from './components/model/LarekApi';
 import { API_URL, CDN_URL } from './utils/constants';
 
 import { EventEmitter } from './components/base/Events';
-import { Page } from './components/Page';
-import { AppState, CatalogChangeEvent, ProductItem } from './components/AppData';
+import { AppState } from './components/model/AppData';
 import { cloneTemplate, ensureElement } from './utils/utils';
-import { Card } from './components/Card';
-import { Modal } from './components/common/Modal';
-import { Basket } from './components/common/Basket';
-
-//
+import { Page } from './components/view/Page';
+import { Modal } from './components/view/Modal';
+import { Basket } from './components/view/Basket';
+import { Success } from './components/view/Success';
+import { Product } from './types';
+import { ProductsEvents } from './components/events/ProductsEvents';
+import { Products } from './components/model/Products';
+import { ModalEvents } from './components/events/ModalEvents';
+import { CartEvents } from './components/events/CartEvents';
+import { ProductCardCatalog } from './components/view/ProductCardCatalog';
+import { ProductCardPreview } from './components/view/ProductCardPreview';
+import { Cart } from './components/model/Cart';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -20,87 +26,114 @@ const api = new LarekApi(CDN_URL, API_URL);
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
+const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
 const page = new Page(document.body, events);
 
 // модель данных приложения
 const appData = new AppState({}, events);
+const productsModel = new Products({}, events);
+const cartModel = new Cart({}, events);
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), events);
-
-
+let productCardPreview: ProductCardPreview;
 
 // получаем товары с сервера
 api
 	.getProductList()
-	.then(appData.setCatalog.bind(appData))
+	.then((products) => {
+		productsModel.setProducts(products);
+	})
 	.catch((error) => {
 		console.error(error);
 	});
 
 // рендерим список товаров на странице
-events.on<CatalogChangeEvent>('items:changed', () => {
-	page.catalog = appData.catalog.map((item) => {
-		const card = new Card(cloneTemplate(cardCatalogTemplate), {
-			onClick: () => events.emit('card:select', item),
+events.on(ProductsEvents.CHANGED, (products: Product[]) => {
+	page.catalog = products.map((product) => {
+		const card = new ProductCardCatalog(cloneTemplate(cardCatalogTemplate), {
+			onClick: () => events.emit(ModalEvents.PRODUCT_PREVIEW, product),
 		});
+
 		return card.render({
-			productCategory: item.category,
-			productTitle: item.title,
-			productImage: item.image,
-			productPrice: item.price,
+			productId: product.id,
+			productCategory: product.category,
+			productTitle: product.title,
+			productImage: product.image,
+			productPrice: product.price,
 		});
 	});
 });
 
-
-
-// открыть товар
-events.on('card:select', (item: ProductItem) => {
-	appData.setPreview(item);
-});
-
 // открыт выбранный товар
-events.on('preview:changed', (item: ProductItem) => {
-	const showItem = (item: ProductItem) => {
-		const card = new Card(cloneTemplate(cardPreviewTemplate));
+events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
+	productCardPreview = new ProductCardPreview(cloneTemplate(cardPreviewTemplate), {
+		onClick: () => events.emit(CartEvents.ADD, product),
+	});
 
-		modal.render({
-			content: card.render({
-				productCategory: item.category,
-				productTitle: item.title,
-				productImage: item.image,
-				productDescription: item.description,
-			})
-		});
-	};
-	if (item) {
-		api.getProductItem(item.id)
-			.then((result) => {
-				item.description = result.description;
-				showItem(item);
-			})
-			.catch((err) => {
-				console.error(err);
-			})
-	} else {
-		modal.close();
-	}
+	modal.render({
+		content: productCardPreview.render({
+			productId: product.id,
+			productCategory: product.category,
+			productTitle: product.title,
+			productImage: product.image,
+			productDescription: product.description,
+			productPrice: product.price,
+			cartProducts: cartModel.getProducts(),
+		}),
+	});
 });
 
-// отправлена форма заказа
-events.on('order:submit', () => {
-	api.orderProducts(appData.order)
+// товар добавили в корзину
+events.on(CartEvents.ADD, (product: Product) => {
+	cartModel.add(product);
+})
+
+// товар удалили из корзины
+events.on(CartEvents.REMOVE, (product: Product) => {
+	cartModel.remove(product);
+})
+
+// очищаем корзину
+events.on(CartEvents.CLEAR, () => {
+	cartModel.clear();
+})
+
+events.on(CartEvents.CHANGED, (products: Product[]) => {
+	page.counter = products.length;
+
+	productCardPreview.cartProducts = products;
 })
 
 
+// отправлена форма заказа
+events.on('order:submit', () => {
+	api
+		.orderProducts(appData.order)
+		.then((result) => {
+			const success = new Success(cloneTemplate(successTemplate), {
+				onClick: () => {
+					modal.close();
+					appData.clearBasket();
+				},
+			});
+
+			modal.render({
+				content: success.render({}),
+			});
+		})
+		.catch((err) => {
+			console.error(err);
+		});
+});
+
 // Блокируем прокрутку страницы если открыта модалка
-events.on('modal:open', () => {
+events.on(ModalEvents.OPEN, () => {
 	page.locked = true;
 });
 
 // ... и разблокируем
-events.on('modal:close', () => {
+events.on(ModalEvents.CLOSE, () => {
 	page.locked = false;
 });
