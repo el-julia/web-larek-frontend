@@ -9,6 +9,7 @@ import { AppState, CatalogChangeEvent, ProductItem } from './components/AppData'
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Card } from './components/Card';
 import { Modal } from './components/common/Modal';
+import { Basket } from './components/common/Basket';
 
 //
 
@@ -18,6 +19,7 @@ const api = new LarekApi(CDN_URL, API_URL);
 // шаблоны
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
+const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 
 const page = new Page(document.body, events);
 
@@ -25,6 +27,8 @@ const page = new Page(document.body, events);
 const appData = new AppState({}, events);
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
+const basket = new Basket(cloneTemplate(basketTemplate), events);
+
 
 
 // получаем товары с сервера
@@ -84,6 +88,11 @@ events.on('preview:changed', (item: ProductItem) => {
 		modal.close();
 	}
 });
+
+// отправлена форма заказа
+events.on('order:submit', () => {
+	api.orderProducts(appData.order)
+})
 
 
 // Блокируем прокрутку страницы если открыта модалка

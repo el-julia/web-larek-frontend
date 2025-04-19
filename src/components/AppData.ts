@@ -17,8 +17,15 @@ export class ProductItem extends Model<Product> {
 
 
 export class AppState extends Model<any> {
-	basket: string;
+	basket: string[];
 	catalog: Product[];
+	loading: boolean;
+	order: IOrder = {
+		address: '',
+		phone: '',
+		email: '',
+		payment: string,
+	}
 
 	preview: string | null;
 
