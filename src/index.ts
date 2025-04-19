@@ -17,6 +17,7 @@ const api = new LarekApi(CDN_URL, API_URL);
 
 // шаблоны
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
+const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 
 const page = new Page(document.body, events);
 
@@ -24,6 +25,7 @@ const page = new Page(document.body, events);
 const appData = new AppState({}, events);
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
+
 
 // получаем товары с сервера
 api
@@ -54,3 +56,25 @@ events.on<CatalogChangeEvent>('items:changed', () => {
 events.on('card:select', (item: ProductItem) => {
 	appData.setPreview(item);
 });
+
+// открыт выбранный товар
+events.on('preview:changed', (item: ProductItem) => {
+	const showItem = (item: ProductItem) => {
+		const card = new Card(cloneTemplate(cardPreviewTemplate));
+
+		modal.render({
+			content: card.render({
+				productCategory: item.category,
+				productTitle: item.title,
+				productImage: item.image,
+				productDescription: item.description,
+
+
+			})
+		});
+	};
+	if (item) {
+		api.
+	}
+
+})

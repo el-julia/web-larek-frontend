@@ -11,7 +11,7 @@ interface ICard<T> {
 	productTitle: string;
 	productImage: string;
 	productPrice: number;
-	productText?: string;
+	productDescription?: string;
 }
 
 export class Card<T> extends Component<ICard<T>> {
@@ -19,7 +19,7 @@ export class Card<T> extends Component<ICard<T>> {
 	protected title: HTMLElement;
 	protected image: HTMLImageElement;
 	protected price: HTMLElement;
-	protected text?: HTMLElement;
+	protected description?: HTMLElement;
 	protected button?: HTMLButtonElement;
 
 
@@ -29,7 +29,7 @@ export class Card<T> extends Component<ICard<T>> {
 		this.title = ensureElement<HTMLElement>('.card__title', container);
 		this.image = ensureElement<HTMLImageElement>('.card__image', container);
 		this.price = ensureElement<HTMLElement>('.card__price', container);
-		this.text = container.querySelector('.card__text') || undefined;
+		this.description = container.querySelector('.card__text');
 		this.button = container.querySelector('.card__button');
 
 
@@ -71,7 +71,7 @@ export class Card<T> extends Component<ICard<T>> {
 	}
 
 	set productText(value: string) {
-		this.setText(this.text, value);
+		this.setText(this.description, value);
 	}
 
 
