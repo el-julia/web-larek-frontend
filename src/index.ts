@@ -28,7 +28,10 @@ const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
-const page = new Page(document.body, events);
+const page = new Page(document.body, events, {
+	// при клике по корзине отправляем событие открытия модального окна корзины
+	onBasketClick: () => events.emit(ModalEvents.BASKET),
+});
 
 // модель данных приложения
 const appData = new AppState({}, events);
@@ -84,6 +87,17 @@ events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
 		}),
 	});
 });
+
+events.on(ModalEvents.BASKET, () => {
+	const products = basketModel.getProducts();
+	const content = basket.render({
+		items: [],
+		total: products.reduce((total, item) => total + item.price, 0),
+	});
+	modal.render({
+		content: content,
+	})
+})
 
 // товар добавили в корзину
 events.on(BasketEvents.ADD, (product: Product) => {

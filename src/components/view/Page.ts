@@ -7,18 +7,28 @@ interface IPage {
 	catalog: HTMLElement[];
 }
 
+export interface IPageActions {
+	onBasketClick: (event: MouseEvent) => void;
+}
+
 export class Page extends Component<IPage> {
 	protected wrapper: HTMLElement;
 	protected counterElement: HTMLElement;
 	protected catalogElement: HTMLElement;
 	protected basket: HTMLElement;
 
-	constructor(container: HTMLElement, protected events: IEvents ) {
+	constructor(
+		container: HTMLElement,
+		protected events: IEvents,
+		actions: IPageActions,
+	) {
 		super(container);
 		this.wrapper = ensureElement<HTMLElement>('.page__wrapper');
 		this.counterElement = ensureElement<HTMLElement>('.header__basket-counter');
 		this.catalogElement = ensureElement<HTMLElement>('.gallery');
 		this.basket = ensureElement<HTMLElement>('.header__basket');
+
+		this.basket.addEventListener('click', actions.onBasketClick);
 	}
 
 	set counter(value: number) {
