@@ -98,9 +98,9 @@ events.on(ModalEvents.BASKET, () => {
 		});
 
 		return cardBasket.render({
-			basketIndex: String(index),
-			cardTitle: product.title,
-			cardPrice: String(product.price),
+			index: index + 1,
+			title: product.title,
+			price: product.price,
 		})
 	})
 

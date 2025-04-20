@@ -6,9 +6,9 @@ export interface ICardBasketActions {
 }
 
 export interface ICardBasket {
-	basketIndex: string;
-	cardTitle: string;
-	cardPrice: string;
+	index: number;
+	title: string;
+	price: number;
 }
 
 export class CardBasket extends Component<ICardBasket> {
@@ -35,5 +35,17 @@ export class CardBasket extends Component<ICardBasket> {
 			'click',
 			actions.onCardButtonDeleteClick
 		);
+	}
+
+	set index(value: number) {
+		this.setText(this.basketIndex, String(value));
+	}
+
+	set title(value: string) {
+		this.setText(this.cardTitle, value);
+	}
+
+	set price(value: number) {
+		this.setText(this.cardPrice, String(value));
 	}
 }
