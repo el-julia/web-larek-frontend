@@ -11,6 +11,7 @@ export interface IOrderActions {
 type Payment = 'online' | 'offline';
 
 interface IOrder {
+	valid: boolean;
 	payment: Payment;
 	address: string;
 }
@@ -33,6 +34,10 @@ export class Order extends Component<IOrder> {
 		this.buttonOnline.addEventListener('click', actions.onOnlineClick);
 		this.buttonOffline.addEventListener('click', actions.onOfflineClick);
 		this.orderButton.addEventListener('click', actions.onProceedButtonClick);
+	}
+
+	set valid(valid: boolean) {
+		this.setDisabled(this.orderButton, !valid);
 	}
 
 	set payment(payment: Payment) {
