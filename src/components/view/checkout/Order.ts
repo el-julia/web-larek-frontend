@@ -5,7 +5,7 @@ export interface IOrderActions {
 	onOnlineClick: (event: MouseEvent) => void;
 	onOfflineClick: (event: MouseEvent) => void;
 	onProceedButtonClick: (event: MouseEvent) => void;
-
+	onAddressInput: (event: InputEvent) => void;
 }
 
 type Payment = 'online' | 'offline';
@@ -34,6 +34,7 @@ export class Order extends Component<IOrder> {
 		this.buttonOnline.addEventListener('click', actions.onOnlineClick);
 		this.buttonOffline.addEventListener('click', actions.onOfflineClick);
 		this.orderButton.addEventListener('click', actions.onProceedButtonClick);
+		this.addressInput.addEventListener('input', actions.onAddressInput);
 	}
 
 	set valid(valid: boolean) {

@@ -152,7 +152,14 @@ events.on(ModalEvents.ORDER, () => {
 	const order = new Order(cloneTemplate(orderTemplate), {
 		onOnlineClick: () => console.log('online'),
 		onOfflineClick: () => console.log('offline'),
-		onProceedButtonClick: () => console.log('procced'),
+		onProceedButtonClick: (event) => {
+			event.preventDefault();
+			console.log('procced');
+		},
+		onAddressInput: (event) => {
+			const target = event.target as HTMLInputElement;
+			console.log('address', target.value);
+		},
 	});
 	modal.render({
 		content: order.render({}),
