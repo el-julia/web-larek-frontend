@@ -1,5 +1,6 @@
 import { Component } from '../../base/Component';
 import { ensureElement } from '../../../utils/utils';
+import { Payment } from '../../../types';
 
 export interface IOrderActions {
 	onOnlineClick: (event: MouseEvent) => void;
@@ -8,7 +9,7 @@ export interface IOrderActions {
 	onAddressInput: (event: InputEvent) => void;
 }
 
-type Payment = 'online' | 'offline';
+
 
 interface IOrder {
 	valid: boolean;

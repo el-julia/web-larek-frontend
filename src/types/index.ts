@@ -81,3 +81,7 @@ export interface IAppState {
 }
 
 export type FormErrors = Partial<Record<keyof IOrder, string>>;
+
+
+// переделываю
+export type Payment = 'online' | 'offline';
