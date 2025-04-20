@@ -19,7 +19,7 @@ export class CardPreview extends Card<ICardPreview> {
 		super.productPrice = price;
 	}
 
-	set cartProducts(products: Product[]) {
+	set basketProducts(products: Product[]) {
 		if (!this.priceless) {
 			// если в товарах корзины найден наш, то помечаем кго как добавленный
 			const addedToCart =
