@@ -1,4 +1,4 @@
-import { Model } from '../../base/Model';
+
 import { ensureElement } from '../../../utils/utils';
 import { Component } from '../../base/Component';
 

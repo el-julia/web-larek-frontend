@@ -20,6 +20,7 @@ import { CardBasket } from './components/view/basket/CardBasket';
 import { IOrderChange, Order as OrderModel } from './components/model/Order';
 import { Order } from './components/view/checkout/Order';
 import { CheckoutEvent } from './components/events/CheckoutEvents';
+import { Contacts } from './components/view/checkout/Contacts';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -50,18 +51,35 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), {
 	onClick: () => events.emit(ModalEvents.ORDER),
 });
+
 const order = new Order(cloneTemplate(orderTemplate), {
 	onOnlineClick: () => events.emit<Payment>(CheckoutEvent.PAYMENT_SELECT, 'online'),
 	onOfflineClick: () => events.emit<Payment>(CheckoutEvent.PAYMENT_SELECT, 'offline'),
 	onProceedButtonClick: (event) => {
 		event.preventDefault();
-		console.log('procced');
+		events.emit(ModalEvents.CONTACTS);
 	},
 	onAddressInput: (event) => {
 		const target = event.target as HTMLInputElement;
 		events.emit(CheckoutEvent.ADDRESS_INPUT, target.value)
 	},
 });
+
+//рендер последнего шага формы
+const contacts = new Contacts(cloneTemplate(contactsTemplate), {
+	onEmailInput: (event) => {
+		const target = event.target as HTMLInputElement;
+		events.emit(CheckoutEvent.EMAIL_INPUT, target.value)
+	},
+	onPhoneInput: (event) => {
+		const target = event.target as HTMLInputElement;
+		events.emit(CheckoutEvent.PHONE_INPUT, target.value)
+	},
+	onToPayButtonClick: (event) => {
+		event.preventDefault();
+		console.log('pay');
+	}
+})
 
 let productCardPreview: CardPreview;
 
@@ -169,6 +187,12 @@ events.on(ModalEvents.ORDER, () => {
 	});
 });
 
+events.on(ModalEvents.CONTACTS, () => {
+	modal.render({
+		content: contacts.render({}),
+	});
+});
+
 // Блокируем прокрутку страницы если открыта модалка
 events.on(ModalEvents.OPEN, () => {
 	page.locked = true;
@@ -192,6 +216,8 @@ events.on(CheckoutEvent.ORDER_CHANGED, (data: IOrderChange) => {
 	order.address = data.address
 	order.valid = data.valid
 })
+
+
 
 // для разработки
 events.on(CatalogEvents.CHANGED, (products: Product[]) => {
