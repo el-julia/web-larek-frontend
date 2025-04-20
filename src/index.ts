@@ -29,8 +29,10 @@ const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
+const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
+const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 
-const page = new Page(document.body, events, {
+const page = new Page(document.body, {
 	// при клике по корзине отправляем событие открытия модального окна корзины
 	onBasketClick: () => events.emit(ModalEvents.BASKET),
 });
@@ -43,7 +45,8 @@ const basketModel = new BasketModel({}, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
 const basket = new Basket(cloneTemplate(basketTemplate), {
-	onButtonBasketClick: () => events.emit(ModalEvents.BASKET)});
+	onClick: () => events.emit(ModalEvents.ORDER),
+});
 
 let productCardPreview: CardPreview;
 
@@ -132,15 +135,14 @@ events.on(BasketEvents.CHANGED, (products: Product[]) => {
 			index: index + 1,
 			title: product.title,
 			price: product.price,
-		})
-	})
+		});
+	});
 
 	basket.render({
 		items: cardBasketItems,
 		total: products.reduce((total, item) => total + item.price, 0),
 	});
-})
-
+});
 
 // отправлена форма заказа
 events.on('order:submit', () => {

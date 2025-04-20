@@ -1,6 +1,5 @@
 import { Component } from '../base/Component';
 import { ensureElement } from '../../utils/utils';
-import { IEvents } from '../base/Events';
 
 interface IPage {
 	counter: number;
@@ -19,7 +18,6 @@ export class Page extends Component<IPage> {
 
 	constructor(
 		container: HTMLElement,
-		protected events: IEvents,
 		actions: IPageActions,
 	) {
 		super(container);

@@ -1,9 +1,12 @@
 import { Component } from '../../base/Component';
-import { IEvents } from '../../base/Events';
-import { createElement, ensureElement, formatNumber } from '../../../utils/utils';
+import {
+	createElement,
+	ensureElement,
+	formatNumber,
+} from '../../../utils/utils';
 
 export interface IBasketAction {
-	onButtonBasketClick: (event: MouseEvent) => void;
+	onClick: (event: MouseEvent) => void;
 }
 
 interface IBasketView {
@@ -24,7 +27,7 @@ export class Basket extends Component<IBasketView> {
 		this.basketTotal = ensureElement<HTMLElement>('.basket__price',this.container);
 		this.buttonBasket = ensureElement<HTMLButtonElement>('.basket__button', this.container);
 
-		this.buttonBasket.addEventListener('click', actions.onButtonBasketClick);
+		this.buttonBasket.addEventListener('click', actions.onClick);
 
 		this.items = [];
 		this.total = 0;
