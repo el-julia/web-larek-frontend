@@ -91,25 +91,8 @@ events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
 });
 
 events.on(ModalEvents.BASKET, () => {
-	const products = basketModel.getProducts();
-	const cardBasketItems = products.map((product, index) => {
-		const cardBasket = new CardBasket(cloneTemplate(cardBasketTemplate), {
-			onCardButtonDeleteClick: () => events.emit(BasketEvents.REMOVE, product),
-		});
-
-		return cardBasket.render({
-			index: index + 1,
-			title: product.title,
-			price: product.price,
-		})
-	})
-
-	const content = basket.render({
-		items: cardBasketItems,
-		total: products.reduce((total, item) => total + item.price, 0),
-	});
 	modal.render({
-		content: content,
+		content: basket.render({}),
 	});
 });
 
@@ -130,9 +113,31 @@ events.on(BasketEvents.CLEAR, () => {
 
 events.on(BasketEvents.CHANGED, (products: Product[]) => {
 	page.counter = products.length;
+});
 
+events.on(BasketEvents.CHANGED, (products: Product[]) => {
 	productCardPreview.cartProducts = products;
 });
+
+events.on(BasketEvents.CHANGED, (products: Product[]) => {
+	const cardBasketItems = products.map((product, index) => {
+		const cardBasket = new CardBasket(cloneTemplate(cardBasketTemplate), {
+			onCardButtonDeleteClick: () => events.emit(BasketEvents.REMOVE, product),
+		});
+
+		return cardBasket.render({
+			index: index + 1,
+			title: product.title,
+			price: product.price,
+		})
+	})
+
+	basket.render({
+		items: cardBasketItems,
+		total: products.reduce((total, item) => total + item.price, 0),
+	});
+})
+
 
 // отправлена форма заказа
 events.on('order:submit', () => {
