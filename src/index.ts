@@ -41,7 +41,10 @@ const productsModel = new Catalog({}, events);
 const basketModel = new BasketModel({}, events);
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
-const basket = new Basket(cloneTemplate(basketTemplate), events);
+
+const basket = new Basket(cloneTemplate(basketTemplate), {
+	onButtonBasketClick: () => events.emit(ModalEvents.BASKET)});
+
 let productCardPreview: CardPreview;
 
 // получаем товары с сервера
