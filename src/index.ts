@@ -4,7 +4,6 @@ import { LarekApi } from './components/model/LarekApi';
 import { API_URL, CDN_URL } from './utils/constants';
 
 import { EventEmitter } from './components/base/Events';
-import { AppState } from './components/model/AppData';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Page } from './components/view/Page';
 import { Modal } from './components/view/Modal';
@@ -38,7 +37,6 @@ const page = new Page(document.body, {
 });
 
 // модель данных приложения
-const appData = new AppState({}, events);
 const productsModel = new Catalog({}, events);
 const basketModel = new BasketModel({}, events);
 
