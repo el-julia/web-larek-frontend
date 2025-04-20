@@ -19,6 +19,7 @@ import { CardPreview } from './components/view/card/CardPreview';
 import { Basket as BasketModel } from './components/model/Basket';
 import { Basket } from './components/view/basket/Basket';
 import { CardBasket } from './components/view/basket/CardBasket';
+import { Order } from './components/view/checkout/Order';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -47,6 +48,8 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), {
 	onClick: () => events.emit(ModalEvents.ORDER),
 });
+
+
 
 let productCardPreview: CardPreview;
 
@@ -144,25 +147,15 @@ events.on(BasketEvents.CHANGED, (products: Product[]) => {
 	});
 });
 
-// отправлена форма заказа
-events.on('order:submit', () => {
-	api
-		.orderProducts(appData.order)
-		.then((result) => {
-			const success = new Success(cloneTemplate(successTemplate), {
-				onClick: () => {
-					modal.close();
-					appData.clearBasket();
-				},
-			});
 
-			modal.render({
-				content: success.render({}),
-			});
-		})
-		.catch((err) => {
-			console.error(err);
-		});
+//оформление заказа по клику оформить в корзине
+
+events.on(ModalEvents.ORDER, () => {
+	const order = new Order(cloneTemplate(orderTemplate));
+	modal.render({
+		content: order.render({}),
+	})
+
 });
 
 // Блокируем прокрутку страницы если открыта модалка
