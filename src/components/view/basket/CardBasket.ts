@@ -1,5 +1,4 @@
 import { Component } from '../../base/Component';
-import { IEvents } from '../../base/Events';
 import { ensureElement } from '../../../utils/utils';
 
 export interface ICardBasketActions {
@@ -13,21 +12,28 @@ export interface ICardBasket {
 }
 
 export class CardBasket extends Component<ICardBasket> {
-
 	protected basketIndex: HTMLElement;
 	protected cardTitle: HTMLElement;
 	protected cardPrice: HTMLElement;
 	protected cardButtonDelete: HTMLButtonElement;
 
-	constructor(container: HTMLElement, events: IEvents, actions: ICardBasketActions) {
+	constructor(container: HTMLElement, actions: ICardBasketActions) {
 		super(container);
 
-		this.basketIndex = ensureElement<HTMLElement>('.basket__item-index', this.container);
+		this.basketIndex = ensureElement<HTMLElement>(
+			'.basket__item-index',
+			this.container
+		);
 		this.cardTitle = ensureElement<HTMLElement>('.card__title', this.container);
 		this.cardPrice = ensureElement<HTMLElement>('.card__price', this.container);
-		this.cardButtonDelete = ensureElement<HTMLButtonElement>('.basket__item-delete', this.container);
+		this.cardButtonDelete = ensureElement<HTMLButtonElement>(
+			'.basket__item-delete',
+			this.container
+		);
 
-		this.cardButtonDelete.addEventListener('click', actions.onCardButtonDeleteClick);
+		this.cardButtonDelete.addEventListener(
+			'click',
+			actions.onCardButtonDeleteClick
+		);
 	}
-
 }

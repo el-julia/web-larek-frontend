@@ -93,7 +93,7 @@ events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
 events.on(ModalEvents.BASKET, () => {
 	const products = basketModel.getProducts();
 	const cardBasketItems = products.map((product, index) => {
-		const cardBasket = new CardBasket(cloneTemplate(cardBasketTemplate), events, {
+		const cardBasket = new CardBasket(cloneTemplate(cardBasketTemplate), {
 			onCardButtonDeleteClick: () => events.emit(BasketEvents.REMOVE, product),
 		});
 
