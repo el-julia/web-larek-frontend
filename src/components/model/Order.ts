@@ -7,6 +7,10 @@ export interface IOrder {
 	address: string;
 }
 
+export interface IOrderChange extends IOrder {
+	valid: boolean;
+}
+
 export class Order extends Model<IOrder> {
 	private payment?: Payment;
 	private address = '';
@@ -20,7 +24,8 @@ export class Order extends Model<IOrder> {
 		this.emitChanges(CheckoutEvent.ORDER_CHANGED, {
 			payment: this.payment,
 			address: this.address,
-		});
+			valid: this.payment !== undefined && this.address.length > 0,
+		} as IOrderChange);
 	}
 
 	setAddress(address: string) {

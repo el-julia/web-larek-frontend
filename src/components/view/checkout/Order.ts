@@ -9,8 +9,6 @@ export interface IOrderActions {
 	onAddressInput: (event: InputEvent) => void;
 }
 
-
-
 interface IOrder {
 	valid: boolean;
 	payment: Payment;
@@ -18,7 +16,6 @@ interface IOrder {
 }
 
 export class Order extends Component<IOrder> {
-
 	protected buttonOnline: HTMLButtonElement;
 	protected buttonOffline: HTMLButtonElement;
 	protected addressInput: HTMLInputElement;
@@ -27,10 +24,22 @@ export class Order extends Component<IOrder> {
 	constructor(container: HTMLFormElement, actions: IOrderActions) {
 		super(container);
 
-		this.buttonOnline = ensureElement<HTMLButtonElement>('button[name=card]', this.container);
-		this.buttonOffline = ensureElement<HTMLButtonElement>('button[name=cash]', this.container);
-		this.addressInput = ensureElement<HTMLInputElement>('input[name=address]', this.container);
-		this.orderButton = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
+		this.buttonOnline = ensureElement<HTMLButtonElement>(
+			'button[name=card]',
+			this.container
+		);
+		this.buttonOffline = ensureElement<HTMLButtonElement>(
+			'button[name=cash]',
+			this.container
+		);
+		this.addressInput = ensureElement<HTMLInputElement>(
+			'input[name=address]',
+			this.container
+		);
+		this.orderButton = ensureElement<HTMLButtonElement>(
+			'button[type=submit]',
+			this.container
+		);
 
 		this.buttonOnline.addEventListener('click', actions.onOnlineClick);
 		this.buttonOffline.addEventListener('click', actions.onOfflineClick);
@@ -43,8 +52,16 @@ export class Order extends Component<IOrder> {
 	}
 
 	set payment(payment: Payment) {
-		this.toggleClass(this.buttonOnline, 'button_alt-active', payment === 'online' );
-		this.toggleClass(this.buttonOffline, 'button_alt-active', payment === 'offline' );
+		this.toggleClass(
+			this.buttonOnline,
+			'button_alt-active',
+			payment === 'online',
+		);
+		this.toggleClass(
+			this.buttonOffline,
+			'button_alt-active',
+			payment === 'offline',
+		);
 	}
 
 	set address(address: string) {
