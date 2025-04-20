@@ -124,7 +124,9 @@ events.on(BasketEvents.CHANGED, (products: Product[]) => {
 });
 
 events.on(BasketEvents.CHANGED, (products: Product[]) => {
-	productCardPreview.cartProducts = products;
+	if (productCardPreview !== undefined) {
+		productCardPreview.basketProducts = products;
+	}
 });
 
 events.on(BasketEvents.CHANGED, (products: Product[]) => {
