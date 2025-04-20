@@ -11,7 +11,7 @@ export class Basket extends Component<IBasketView> {
 
 	protected basketList: HTMLElement;
 	protected basketTotal: HTMLElement;
-	protected buttonBasket: HTMLElement;
+	protected buttonBasket: HTMLButtonElement;
 
 	constructor(container: HTMLElement, events: IEvents) {
 		super(container);

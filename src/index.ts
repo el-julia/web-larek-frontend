@@ -18,6 +18,7 @@ import { CardCatalog } from './components/view/card/CardCatalog';
 import { CardPreview } from './components/view/card/CardPreview';
 import { Basket as BasketModel } from './components/model/Basket';
 import { Basket } from './components/view/basket/Basket';
+import { CardBasket } from './components/view/basket/CardBasket';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -26,6 +27,7 @@ const api = new LarekApi(CDN_URL, API_URL);
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
+const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
 const page = new Page(document.body, events, {
@@ -90,36 +92,47 @@ events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
 
 events.on(ModalEvents.BASKET, () => {
 	const products = basketModel.getProducts();
+	const cardBasketItems = products.map((product, index) => {
+		const cardBasket = new CardBasket(cloneTemplate(cardBasketTemplate), events, {
+			onCardButtonDeleteClick: () => events.emit(BasketEvents.REMOVE, product),
+		});
+
+		return cardBasket.render({
+			basketIndex: String(index),
+			cardTitle: product.title,
+			cardPrice: String(product.price),
+		})
+	})
+
 	const content = basket.render({
-		items: [],
+		items: cardBasketItems,
 		total: products.reduce((total, item) => total + item.price, 0),
 	});
 	modal.render({
 		content: content,
-	})
-})
+	});
+});
 
 // товар добавили в корзину
 events.on(BasketEvents.ADD, (product: Product) => {
 	basketModel.add(product);
-})
+});
 
 // товар удалили из корзины
 events.on(BasketEvents.REMOVE, (product: Product) => {
 	basketModel.remove(product);
-})
+});
 
 // очищаем корзину
 events.on(BasketEvents.CLEAR, () => {
 	basketModel.clear();
-})
+});
 
 events.on(BasketEvents.CHANGED, (products: Product[]) => {
 	page.counter = products.length;
 
 	productCardPreview.cartProducts = products;
-})
-
+});
 
 // отправлена форма заказа
 events.on('order:submit', () => {
