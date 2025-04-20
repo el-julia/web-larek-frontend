@@ -7,7 +7,7 @@ import { EventEmitter } from './components/base/Events';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Page } from './components/view/Page';
 import { Modal } from './components/view/Modal';
-import { Product } from './types';
+import { Payment, Product } from './types';
 import { CatalogEvents } from './components/events/CatalogEvents';
 import { Catalog } from './components/model/Catalog';
 import { ModalEvents } from './components/events/ModalEvents';
@@ -17,7 +17,9 @@ import { CardPreview } from './components/view/card/CardPreview';
 import { Basket as BasketModel } from './components/model/Basket';
 import { Basket } from './components/view/basket/Basket';
 import { CardBasket } from './components/view/basket/CardBasket';
+import { IOrderChange, Order as OrderModel } from './components/model/Order';
 import { Order } from './components/view/checkout/Order';
+import { CheckoutEvent } from './components/events/CheckoutEvents';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -41,11 +43,24 @@ const page = new Page(document.body, {
 // модель данных приложения
 const productsModel = new Catalog({}, events);
 const basketModel = new BasketModel({}, events);
+const orderModel = new OrderModel({}, events);
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
 const basket = new Basket(cloneTemplate(basketTemplate), {
 	onClick: () => events.emit(ModalEvents.ORDER),
+});
+const order = new Order(cloneTemplate(orderTemplate), {
+	onOnlineClick: () => events.emit<Payment>(CheckoutEvent.PAYMENT_SELECT, 'online'),
+	onOfflineClick: () => events.emit<Payment>(CheckoutEvent.PAYMENT_SELECT, 'offline'),
+	onProceedButtonClick: (event) => {
+		event.preventDefault();
+		console.log('procced');
+	},
+	onAddressInput: (event) => {
+		const target = event.target as HTMLInputElement;
+		events.emit(CheckoutEvent.ADDRESS_INPUT, target.value)
+	},
 });
 
 let productCardPreview: CardPreview;
@@ -149,18 +164,6 @@ events.on(BasketEvents.CHANGED, (products: Product[]) => {
 //оформление заказа по клику оформить в корзине
 
 events.on(ModalEvents.ORDER, () => {
-	const order = new Order(cloneTemplate(orderTemplate), {
-		onOnlineClick: () => console.log('online'),
-		onOfflineClick: () => console.log('offline'),
-		onProceedButtonClick: (event) => {
-			event.preventDefault();
-			console.log('procced');
-		},
-		onAddressInput: (event) => {
-			const target = event.target as HTMLInputElement;
-			console.log('address', target.value);
-		},
-	});
 	modal.render({
 		content: order.render({}),
 	});
@@ -174,4 +177,24 @@ events.on(ModalEvents.OPEN, () => {
 // ... и разблокируем
 events.on(ModalEvents.CLOSE, () => {
 	page.locked = false;
+});
+
+events.on(CheckoutEvent.PAYMENT_SELECT, (payment: Payment) => {
+	orderModel.setPayment(payment);
+})
+
+events.on(CheckoutEvent.ADDRESS_INPUT, (address: string) => {
+	orderModel.setAddress(address);
+})
+
+events.on(CheckoutEvent.ORDER_CHANGED, (data: IOrderChange) => {
+	order.payment = data.payment
+	order.address = data.address
+	order.valid = data.valid
+})
+
+// для разработки
+events.on(CatalogEvents.CHANGED, (products: Product[]) => {
+	events.emit(BasketEvents.ADD, products.pop());
+	events.emit(ModalEvents.ORDER);
 });
