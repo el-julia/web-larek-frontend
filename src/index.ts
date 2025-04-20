@@ -27,9 +27,11 @@ const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
-const successTemplate = ensureElement<HTMLTemplateElement>('#success');
+
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
+
+const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
 const page = new Page(document.body, {
 	// при клике по корзине отправляем событие открытия модального окна корзины
@@ -45,8 +47,6 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), {
 	onClick: () => events.emit(ModalEvents.ORDER),
 });
-
-
 
 let productCardPreview: CardPreview;
 
@@ -146,15 +146,17 @@ events.on(BasketEvents.CHANGED, (products: Product[]) => {
 	});
 });
 
-
 //оформление заказа по клику оформить в корзине
 
 events.on(ModalEvents.ORDER, () => {
-	const order = new Order(cloneTemplate(orderTemplate));
+	const order = new Order(cloneTemplate(orderTemplate), {
+		onOnlineClick: () => console.log('online'),
+		onOfflineClick: () => console.log('offline'),
+		onProceedButtonClick: () => console.log('procced'),
+	});
 	modal.render({
 		content: order.render({}),
-	})
-
+	});
 });
 
 // Блокируем прокрутку страницы если открыта модалка
