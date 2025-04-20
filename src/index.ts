@@ -8,9 +8,8 @@ import { AppState } from './components/model/AppData';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Page } from './components/view/Page';
 import { Modal } from './components/view/Modal';
-import { Success } from './components/view/Success';
 import { Product } from './types';
-import { ProductsEvents } from './components/events/ProductsEvents';
+import { CatalogEvents } from './components/events/CatalogEvents';
 import { Catalog } from './components/model/Catalog';
 import { ModalEvents } from './components/events/ModalEvents';
 import { BasketEvents } from './components/events/BasketEvents';
@@ -64,7 +63,7 @@ api
 	});
 
 // рендерим список товаров на странице
-events.on(ProductsEvents.CHANGED, (products: Product[]) => {
+events.on(CatalogEvents.CHANGED, (products: Product[]) => {
 	page.catalog = products.map((product) => {
 		const card = new CardCatalog(cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit(ModalEvents.PRODUCT_PREVIEW, product),
