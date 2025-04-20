@@ -3,6 +3,7 @@ export enum ModalEvents {
 	PRODUCT_PREVIEW = 'modal:productPreview',
 	BASKET = 'modal:basket',
 	ORDER = 'modal:order',
+	CONTACTS = 'modal:contacts',
 
 	// исходящие события
 	OPEN = 'modal:open',
