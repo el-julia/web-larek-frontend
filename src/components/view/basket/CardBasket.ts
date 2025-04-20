@@ -1,5 +1,5 @@
 import { Component } from '../../base/Component';
-import { ensureElement } from '../../../utils/utils';
+import { ensureElement, formatNumber } from '../../../utils/utils';
 
 export interface ICardBasketActions {
 	onCardButtonDeleteClick: (event: MouseEvent) => void;
@@ -38,7 +38,7 @@ export class CardBasket extends Component<ICardBasket> {
 	}
 
 	set index(value: number) {
-		this.setText(this.basketIndex, String(value));
+		this.setText(this.basketIndex, formatNumber(value));
 	}
 
 	set title(value: string) {
@@ -46,6 +46,6 @@ export class CardBasket extends Component<ICardBasket> {
 	}
 
 	set price(value: number) {
-		this.setText(this.cardPrice, String(value));
+		this.setText(this.cardPrice, formatNumber(value));
 	}
 }
