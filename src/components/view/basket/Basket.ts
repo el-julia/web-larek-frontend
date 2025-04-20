@@ -26,6 +26,7 @@ export class Basket extends Component<IBasketView> {
 			})
 		}
 		this.items = [];
+		this.total = 0;
 	}
 
 	set items(items: HTMLElement[]) {
@@ -39,7 +40,12 @@ export class Basket extends Component<IBasketView> {
 	}
 
 	set total(total: number) {
-		this.setText(this.basketTotal, formatNumber(total));
+		if (total > 0) {
+			this.setText(this.basketTotal, `${formatNumber(total)} синапсов`);
+		} else {
+			this.setText(this.basketTotal, '');
+		}
 	}
+
 
 }
