@@ -20,7 +20,8 @@ import { CardBasket } from './components/view/basket/CardBasket';
 import { IOrderChange, Order as OrderModel } from './components/model/Order';
 import { Order } from './components/view/checkout/Order';
 import { CheckoutEvent } from './components/events/CheckoutEvents';
-import { Contacts } from './components/view/checkout/Contacts';
+import { Contacts, IContact } from './components/view/checkout/Contacts';
+import { Contacts as ContactsModel, IContactsChange } from './components/model/Contacts';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -218,9 +219,16 @@ events.on(CheckoutEvent.ORDER_CHANGED, (data: IOrderChange) => {
 })
 
 
+events.on(CheckoutEvent.CONTACTS_CHANGED, (data: IContactsChange) => {
+	contacts.email = data.email
+	contacts.phone = data.phone
+	contacts.valid = data.valid
+})
+
+
 
 // для разработки
 events.on(CatalogEvents.CHANGED, (products: Product[]) => {
 	events.emit(BasketEvents.ADD, products.pop());
-	events.emit(ModalEvents.ORDER);
+	events.emit(ModalEvents.CONTACTS);
 });

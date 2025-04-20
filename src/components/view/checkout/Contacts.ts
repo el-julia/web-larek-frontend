@@ -1,4 +1,3 @@
-
 import { ensureElement } from '../../../utils/utils';
 import { Component } from '../../base/Component';
 
@@ -8,7 +7,6 @@ export interface IContactActions {
 	onToPayButtonClick: (event: MouseEvent) => void;
 }
 
-
 export interface IContact {
 	valid: boolean;
 	email: string;
@@ -16,7 +14,6 @@ export interface IContact {
 }
 
 export class Contacts extends Component<IContact> {
-
 	protected emailInput: HTMLInputElement;
 	protected phoneInput: HTMLInputElement;
 	protected toPayButton: HTMLButtonElement;
@@ -33,11 +30,11 @@ export class Contacts extends Component<IContact> {
 
 	}
 
-	setEmail(email: string) {
+	set email(email: string) {
 		this.emailInput.value = email;
 	}
 
-	setPhone(phone: string) {
+	set phone(phone: string) {
 		this.phoneInput.value = phone;
 	}
 
