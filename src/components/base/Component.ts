@@ -2,6 +2,7 @@
 
 /**
  * Базовый компонент
+ * TODO: отказаться, от магии сеттеров
  */
 export abstract class Component<T> {
 	protected constructor(protected readonly container: HTMLElement) {

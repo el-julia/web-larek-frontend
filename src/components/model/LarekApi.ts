@@ -7,7 +7,7 @@ interface ILarekApi {
 	orderProducts(order: IOrder): Promise<OrderResult>;
 }
 
-
+// TODO - вынести сервис в отдельное место
 export class LarekApi extends Api implements ILarekApi {
 	readonly cdn: string;
 

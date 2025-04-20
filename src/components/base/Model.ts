@@ -2,6 +2,7 @@ import { IEvents } from './Events';
 
 /**
  * Базовая модель, чтобы можно было отличить ее от простых объектов с данными
+ * TODO: отказаться от ненужного дженерика?
  */
 export abstract class Model<T> {
 	constructor(data: Partial<T>, protected events: IEvents) {
