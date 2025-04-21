@@ -64,7 +64,7 @@ export interface IOrder extends IOrderForm, IContactForm {
 
 export interface IOrderForm {
 	address: string;
-	payment: 'card' | 'cash' | null;
+	payment: Payment | null;
 }
 
 export interface IContactForm {
@@ -84,4 +84,4 @@ export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
 
 // переделываю
-export type Payment = 'online' | 'offline';
+export type Payment = 'card' | 'cash';

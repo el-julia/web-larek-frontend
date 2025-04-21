@@ -10,24 +10,32 @@ export interface IOrderChange {
 }
 
 export class Order extends Model {
-	private payment?: Payment;
-	private address = '';
+	private _payment?: Payment;
+	private _address = '';
+
+	getPayment(): Payment | null {
+		return this._payment ?? null;
+	}
+
+	getAddress(): string {
+		return this._address;
+	}
 
 	setPayment(payment?: Payment) {
-		this.payment = payment;
+		this._payment = payment;
 		this.orderChanged();
 	}
 
 	private orderChanged() {
 		this.emitChanges(CheckoutEvent.ORDER_CHANGED, {
-			payment: this.payment,
-			address: this.address,
-			valid: this.payment !== undefined && this.address.length > 0,
+			payment: this._payment,
+			address: this._address,
+			valid: this._payment !== undefined && this._address.length > 0,
 		} as IOrderChange);
 	}
 
 	setAddress(address: string) {
-		this.address = address;
+		this._address = address;
 		this.orderChanged();
 	}
 }

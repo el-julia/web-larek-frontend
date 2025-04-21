@@ -64,12 +64,12 @@ const basket = new Basket(cloneTemplate(basketTemplate), {
 const order = new Order(cloneTemplate(orderTemplate), {
 	onOnlineClick: () =>
 		events.emit<Pick<IOrderChange, 'payment'>>(CheckoutEvent.PAYMENT_SELECT, {
-			payment: 'online',
+			payment: 'card',
 		}),
 
 	onOfflineClick: () =>
 		events.emit<Pick<IOrderChange, 'payment'>>(CheckoutEvent.PAYMENT_SELECT, {
-			payment: 'offline',
+			payment: 'cash',
 		}),
 
 	onProceedButtonClick: (event) => {
@@ -108,8 +108,22 @@ const contacts = new Contacts(cloneTemplate(contactsTemplate), {
 	},
 	onToPayButtonClick: (event) => {
 		event.preventDefault();
-		basketModel.clear();
-		events.emit(ModalEvents.SUCCESS);
+		api
+			.orderProducts({
+				items: basketModel.getProducts().map((product) => product.id),
+				payment: orderModel.getPayment(),
+				address: orderModel.getAddress(),
+				email: contactModel.getEmail(),
+				phone: contactModel.getPhone(),
+			})
+			.then(() => {
+				successModel.setTotal(basketModel.getTotal());
+				basketModel.clear();
+				events.emit(ModalEvents.SUCCESS);
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 	},
 });
 

@@ -2,6 +2,11 @@ import { Model } from '../base/Model';
 import { Product } from '../../types';
 import { BasketEvents } from '../events/BasketEvents';
 
+interface IBasketData {
+	products: Product[];
+	total: number;
+}
+
 export class Basket extends Model {
 	private products: Product[] = [];
 
@@ -9,20 +14,31 @@ export class Basket extends Model {
 		return this.products;
 	}
 
+	getTotal(): number {
+		return this.products.reduce((total, product) => total + product.price, 0);
+	}
+
 	add(product: Product) {
 		this.products.push(product);
-		this.emitChanges(BasketEvents.CHANGED, this.products);
+		this.changed();
 	}
 
 	remove(product: Product) {
 		this.products = this.products.filter(
 			(cartProduct) => cartProduct.id !== product.id
 		);
-		this.emitChanges(BasketEvents.CHANGED, this.products);
+		this.changed();
 	}
 
 	clear() {
 		this.products = [];
-		this.emitChanges(BasketEvents.CHANGED, this.products);
+		this.changed();
+	}
+
+	private changed() {
+		this.emitChanges(BasketEvents.CHANGED, {
+			products: this.getProducts(),
+			total: this.getTotal(),
+		} as IBasketData);
 	}
 }
