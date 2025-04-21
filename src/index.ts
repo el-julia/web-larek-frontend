@@ -108,6 +108,7 @@ const contacts = new Contacts(cloneTemplate(contactsTemplate), {
 	},
 	onToPayButtonClick: (event) => {
 		event.preventDefault();
+		basketModel.clear();
 		events.emit(ModalEvents.SUCCESS);
 	},
 });
