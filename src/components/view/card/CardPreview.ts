@@ -36,7 +36,9 @@ export class CardPreview extends Card<ICardPreview> {
 	}
 
 	private setButtonState(disabled: boolean, text: string) {
-		this.setDisabled(this.button, disabled);
-		this.button.textContent = text;
+		if (this.button) {
+			this.setDisabled(this.button, disabled);
+			this.button.textContent = text;
+		}
 	}
 }

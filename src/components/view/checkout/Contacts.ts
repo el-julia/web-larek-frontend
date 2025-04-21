@@ -2,8 +2,8 @@ import { ensureElement } from '../../../utils/utils';
 import { Component } from '../../base/Component';
 
 export interface IContactActions {
-	onEmailInput: (event: InputEvent) => void;
-	onPhoneInput: (event: InputEvent) => void;
+	onEmailInput: (event: Event) => void;
+	onPhoneInput: (event: Event) => void;
 	onToPayButtonClick: (event: MouseEvent) => void;
 }
 

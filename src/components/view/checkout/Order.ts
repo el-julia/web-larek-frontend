@@ -6,7 +6,7 @@ export interface IOrderActions {
 	onOnlineClick: (event: MouseEvent) => void;
 	onOfflineClick: (event: MouseEvent) => void;
 	onProceedButtonClick: (event: MouseEvent) => void;
-	onAddressInput: (event: InputEvent) => void;
+	onAddressInput: (event: Event) => void;
 }
 
 interface IOrder {

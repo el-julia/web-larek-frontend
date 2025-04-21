@@ -19,8 +19,8 @@ export abstract class Card<T extends ICard> extends Component<T> {
 	protected title: HTMLElement;
 	protected image: HTMLImageElement;
 	protected price: HTMLElement;
-	protected description?: HTMLElement;
-	protected button?: HTMLButtonElement;
+	protected description: HTMLElement | null;
+	protected button: HTMLButtonElement | null;
 
 	constructor(protected container: HTMLElement, actions?: ICardActions) {
 		super(container);
@@ -73,6 +73,8 @@ export abstract class Card<T extends ICard> extends Component<T> {
 	}
 
 	set productText(value: string) {
-		this.setText(this.description, value);
+		if (this.description) {
+			this.setText(this.description, value);
+		}
 	}
 }

@@ -22,8 +22,12 @@ export class Modal extends Component<IModalData>{
 		this.modalContent.addEventListener('click', (event) => event.stopPropagation());
 	}
 
-	set content(value: HTMLElement) {
-		this.modalContent.replaceChildren(value);
+	set content(value: HTMLElement | null) {
+		if (value) {
+			this.modalContent.replaceChildren(value);
+		} else {
+			this.modalContent.replaceChildren();
+		}
 	}
 
 	open(): void  {
