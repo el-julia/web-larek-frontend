@@ -2,11 +2,7 @@ import { Model } from '../base/Model';
 import { Product } from '../../types';
 import { BasketEvents } from '../events/BasketEvents';
 
-export interface IBasket {
-	products: Product[];
-}
-
-export class Basket extends Model<IBasket> {
+export class Basket extends Model {
 	private products: Product[] = [];
 
 	getProducts(): Product[] {

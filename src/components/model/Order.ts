@@ -2,16 +2,13 @@ import { Model } from '../base/Model';
 import { Payment } from '../../types';
 import { CheckoutEvent } from '../events/CheckoutEvents';
 
-export interface IOrder {
+export interface IOrderChange {
 	payment: Payment;
 	address: string;
-}
-
-export interface IOrderChange extends IOrder {
 	valid: boolean;
 }
 
-export class Order extends Model<IOrder> {
+export class Order extends Model {
 	private payment?: Payment;
 	private address = '';
 

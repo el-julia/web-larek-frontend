@@ -1,18 +1,15 @@
 import { Model } from '../base/Model';
 import { CheckoutEvent } from '../events/CheckoutEvents';
 
-
-export interface IContacts {
+export interface IContactsChange {
 	email: string;
 	phone: string;
-}
-
-export interface IContactsChange extends IContacts {
 	valid: boolean;
 }
-export class Contacts extends Model<IContacts>{
-	private email: string;
-	private phone: string;
+
+export class Contacts extends Model {
+	private email = '';
+	private phone = '';
 
 	setEmail(email: string) {
 		this.email = email;
