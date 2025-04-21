@@ -55,12 +55,12 @@ export class Order extends Component<IOrder> {
 		this.toggleClass(
 			this.buttonOnline,
 			'button_alt-active',
-			payment === 'online',
+			payment === 'card',
 		);
 		this.toggleClass(
 			this.buttonOffline,
 			'button_alt-active',
-			payment === 'offline',
+			payment === 'cash',
 		);
 	}
 
