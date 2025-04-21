@@ -25,8 +25,9 @@ import {
 	Contacts as ContactsModel,
 	IContactsChange,
 } from './components/model/Contacts';
-import { Success } from './components/model/Success';
+import { Success as SuccessModel } from './components/model/Success';
 import { SuccessEvent } from './components/events/SuccessEvent';
+import { Success } from './components/view/Success';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -52,7 +53,7 @@ const catalogModel = new Catalog(events, CatalogEvents.CHANGED);
 const basketModel = new BasketModel(events, BasketEvents.CHANGED);
 const orderModel = new OrderModel(events, CheckoutEvent.ORDER_CHANGED);
 const contactModel = new ContactsModel(events, CheckoutEvent.CONTACTS_CHANGED);
-const successModel = new Success(events, SuccessEvent.SUCCESS)
+const successModel = new SuccessModel(events, SuccessEvent.SUCCESS)
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
@@ -84,6 +85,13 @@ const order = new Order(cloneTemplate(orderTemplate), {
 	},
 });
 
+const success = new Success(cloneTemplate(successTemplate), {
+	onSuccessButtonClick: (event) => {
+		event.preventDefault();
+		events.emit(ModalEvents.NONE);
+	}
+})
+
 //рендер последнего шага формы
 const contacts = new Contacts(cloneTemplate(contactsTemplate), {
 	onEmailInput: (event) => {
@@ -100,7 +108,7 @@ const contacts = new Contacts(cloneTemplate(contactsTemplate), {
 	},
 	onToPayButtonClick: (event) => {
 		event.preventDefault();
-		console.log('pay');
+		events.emit(ModalEvents.SUCCESS);
 	},
 });
 
@@ -216,6 +224,12 @@ events.on(ModalEvents.CONTACTS, () => {
 	});
 });
 
+events.on(ModalEvents.SUCCESS, () => {
+	modal.render({
+		content: success.render({}),
+	})
+})
+
 // Блокируем прокрутку страницы если открыта модалка
 events.on(ModalEvents.OPEN, () => {
 	page.locked = true;
@@ -238,13 +252,17 @@ orderModel.subscribe(data => {
 	order.payment = data.payment;
 	order.address = data.address;
 	order.valid = data.valid;
-})
+});
 
 contactModel.subscribe(data => {
 	contacts.email = data.email;
 	contacts.phone = data.phone;
 	contacts.valid = data.valid;
-})
+});
+
+successModel.subscribe(data => {
+	success.total = data.total;
+});
 
 events.on(CheckoutEvent.EMAIL_INPUT, (data: Pick<IContactsChange, 'email'>) => {
 	contactModel.setEmail(data.email);
@@ -256,7 +274,7 @@ events.on(CheckoutEvent.PHONE_INPUT, (data: Pick<IContactsChange, 'phone'>) => {
 
 
 // для разработки
-catalogModel.subscribe(products => {
-	events.emit(BasketEvents.ADD, products.pop());
-	events.emit(ModalEvents.CONTACTS);
-})
+//catalogModel.subscribe(products => {
+	//events.emit(BasketEvents.ADD, products.pop());
+	//events.emit(ModalEvents.CONTACTS);
+//})

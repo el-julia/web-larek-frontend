@@ -1,24 +1,35 @@
 import { Component } from '../base/Component';
-import { ensureElement } from '../../utils/utils';
+import { ensureElement, formatNumber } from '../../utils/utils';
 
-interface ISuccess {
+export interface ISuccessAction {
+	onSuccessButtonClick: (event: MouseEvent) => void;
+}
+
+export interface ISuccess {
 	total: number;
 }
 
-interface ISuccessActions {
-	onClick: () => void;
-}
-
 export class Success extends Component<ISuccess> {
-	protected successClose: HTMLElement;
+	protected totalSuccess: HTMLElement;
+	protected buttonSuccess: HTMLButtonElement;
 
-	constructor(container: HTMLElement, actions: ISuccessActions) {
+	constructor(container: HTMLElement, actions: ISuccessAction ) {
 		super(container);
 
-		this.successClose = ensureElement<HTMLElement>('.order-success__close', this.container);
+		this.totalSuccess = ensureElement<HTMLElement>('.order-success__description', this.container);
+		this.buttonSuccess = ensureElement<HTMLButtonElement>('.order-success__close', this.container);
 
-		if (actions?.onClick) {
-			this.successClose.addEventListener('click', actions.onClick);
+		this.buttonSuccess.addEventListener('click', actions.onSuccessButtonClick);
+
+		this.total = 0;
+	}
+
+	set total(total: number) {
+		if (total > 0) {
+			this.setText(this.totalSuccess, `Списано ${formatNumber(total)} синапсов`);
+		} else {
+			this.setText(this.totalSuccess, '');
 		}
 	}
+
 }
