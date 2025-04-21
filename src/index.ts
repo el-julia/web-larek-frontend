@@ -25,6 +25,8 @@ import {
 	Contacts as ContactsModel,
 	IContactsChange,
 } from './components/model/Contacts';
+import { Success } from './components/model/Success';
+import { SuccessEvent } from './components/events/SuccessEvent';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -50,6 +52,7 @@ const catalogModel = new Catalog(events, CatalogEvents.CHANGED);
 const basketModel = new BasketModel(events, BasketEvents.CHANGED);
 const orderModel = new OrderModel(events, CheckoutEvent.ORDER_CHANGED);
 const contactModel = new ContactsModel(events, CheckoutEvent.CONTACTS_CHANGED);
+const successModel = new Success(events, SuccessEvent.SUCCESS)
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
