@@ -3,11 +3,12 @@ import { IOrder, OrderResult, Product } from '../../types';
 
 interface ILarekApi {
 	getProductItem(id: string): Promise<Product>;
-	getProductList() : Promise<Product[]>;
+
+	getProductList(): Promise<Product[]>;
+
 	orderProducts(order: IOrder): Promise<OrderResult>;
 }
 
-// TODO - вынести сервис в отдельное место
 export class LarekApi extends Api implements ILarekApi {
 	readonly cdn: string;
 
@@ -17,27 +18,24 @@ export class LarekApi extends Api implements ILarekApi {
 	}
 
 	getProductItem(id: string): Promise<Product> {
-		return this.get(`/product/${id}`).then(
-			(item: Product) => ({
-				...item,
-				image: this.cdn + item.image,
-			})
-		);
-
+		return this.get<Product>(`/product/${id}`).then((item) => ({
+			...item,
+			image: this.cdn + item.image,
+		}));
 	}
 
 	getProductList(): Promise<Product[]> {
-		return this.get('/product/').then((data: ApiListResponse<Product>) =>
+		return this.get<ApiListResponse<Product>>('/product/').then((data) =>
 			data.items.map((item: Product) => ({
 				...item,
-				image: this.cdn + item.image
+				image: this.cdn + item.image,
 			}))
 		);
 	}
 
 	orderProducts(order: IOrder): Promise<OrderResult> {
-		return this.post('/order', order).then(
-		(data: OrderResult) => data
+		return this.post<OrderResult>('/order', order).then(
+			(data: OrderResult) => data
 		);
 	}
 }
