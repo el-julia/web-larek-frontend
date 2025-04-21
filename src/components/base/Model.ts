@@ -1,19 +1,13 @@
 import { IEvents } from './Events';
 
 /**
- * Базовая модель, чтобы можно было отличить ее от простых объектов с данными
- * TODO: отказаться от ненужного дженерика?
+ * Базовый класс модели он содержит вспомогательный метод для отправки событий,
+ * как правило при изменении модели
  */
-export abstract class Model<T> {
-	constructor(data: Partial<T>, protected events: IEvents) {
-		Object.assign(this, data);
-	}
+export abstract class Model {
+	constructor(private events: IEvents) {}
 
-	// Сообщить всем что модель поменялась
-	emitChanges(event: string, payload?: object) {
-		// Состав данных можно модифицировать
+	protected emitChanges(event: string, payload?: object) {
 		this.events.emit(event, payload ?? {});
 	}
-
-	// далее можно добавить общие методы для моделей
 }
