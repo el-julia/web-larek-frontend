@@ -5,6 +5,7 @@ export interface IContactsChange {
 	email: string;
 	phone: string;
 	valid: boolean;
+	error: string;
 }
 
 export class Contacts extends Model {
@@ -33,7 +34,23 @@ export class Contacts extends Model {
 		this.emitChanges(CheckoutEvent.CONTACTS_CHANGED, {
 			email: this._email,
 			phone: this._phone,
-			valid: this._email.length > 0 && this._phone.length > 0,
+			valid: this.getValid(),
+			error: this.getError(),
 		} as IContactsChange);
 	}
+
+	private getValid(): boolean {
+		return this._email.length > 0 && this._phone.length > 0;
+	}
+
+	getError(): string {
+		if (this._email.length <= 0) {
+			return 'Необходимо заполнить Email'
+		} else if (this._phone.length <= 0) {
+			return 'Необходимо заполнить телефон'
+		} else {
+			return ''
+		}
+	}
+
 }

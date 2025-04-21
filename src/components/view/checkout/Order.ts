@@ -13,6 +13,7 @@ interface IOrder {
 	valid: boolean;
 	payment: Payment;
 	address: string;
+	error: string;
 }
 
 export class Order extends Component<IOrder> {
@@ -20,6 +21,7 @@ export class Order extends Component<IOrder> {
 	protected buttonOffline: HTMLButtonElement;
 	protected addressInput: HTMLInputElement;
 	protected orderButton: HTMLButtonElement;
+	protected errorsOrder: HTMLElement;
 
 	constructor(container: HTMLFormElement, actions: IOrderActions) {
 		super(container);
@@ -40,6 +42,8 @@ export class Order extends Component<IOrder> {
 			'button[type=submit]',
 			this.container
 		);
+
+		this.errorsOrder = ensureElement<HTMLElement>('.form__errors', this.container);
 
 		this.buttonOnline.addEventListener('click', actions.onOnlineClick);
 		this.buttonOffline.addEventListener('click', actions.onOfflineClick);
@@ -67,4 +71,9 @@ export class Order extends Component<IOrder> {
 	set address(address: string) {
 		this.addressInput.value = address;
 	}
+
+	set error(value: string) {
+		this.errorsOrder.textContent = value;
+	}
+
 }

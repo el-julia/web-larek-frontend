@@ -278,12 +278,14 @@ events.on(CheckoutEvent.ORDER_CHANGED, (data: IOrderChange) => {
 	order.payment = data.payment;
 	order.address = data.address;
 	order.valid = data.valid;
+	order.error = data.error;
 });
 
 events.on(CheckoutEvent.CONTACTS_CHANGED, (data: IContactsChange) => {
 	contacts.email = data.email;
 	contacts.phone = data.phone;
 	contacts.valid = data.valid;
+	contacts.error = data.error;
 });
 
 events.on(SuccessEvent.CHANGED, (data: ISuccess) => {
@@ -298,9 +300,8 @@ events.on(CheckoutEvent.PHONE_INPUT, (data: Pick<IContactsChange, 'phone'>) => {
 	contactModel.setPhone(data.phone);
 });
 
-
 // для разработки
-//catalogModel.subscribe(products => {
-//events.emit(BasketEvents.ADD, products.pop());
-//events.emit(ModalEvents.CONTACTS);
-//})
+events.on(CatalogEvents.CHANGED, (products: Product[]) => {
+	events.emit(BasketEvents.ADD, products.pop());
+	events.emit(ModalEvents.ORDER);
+});

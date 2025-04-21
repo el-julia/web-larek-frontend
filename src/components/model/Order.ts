@@ -6,7 +6,7 @@ export interface IOrderChange {
 	payment?: Payment;
 	address: string;
 	valid: boolean;
-	errors: Error[];
+	error: string;
 }
 
 export class Order extends Model {
@@ -30,12 +30,27 @@ export class Order extends Model {
 		this.emitChanges(CheckoutEvent.ORDER_CHANGED, {
 			payment: this._payment,
 			address: this._address,
-			valid: this._payment !== undefined && this._address.length > 0,
+			valid: this.getValid(),
+			error: this.getError(),
 		} as IOrderChange);
+	}
+
+	private getValid(): boolean {
+		return this._payment !== undefined && this._address.length > 0;
 	}
 
 	setAddress(address: string) {
 		this._address = address;
 		this.orderChanged();
+	}
+
+	getError(): string {
+		if (this._payment == undefined) {
+			return 'Необходимо выбрать способ оплаты'
+		} else if (this._address.length <= 0) {
+			return 'Необходимо заполнить адрес'
+		} else {
+			return ''
+		}
 	}
 }

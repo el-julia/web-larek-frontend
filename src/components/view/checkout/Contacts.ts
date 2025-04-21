@@ -17,6 +17,7 @@ export class Contacts extends Component<IContact> {
 	protected emailInput: HTMLInputElement;
 	protected phoneInput: HTMLInputElement;
 	protected toPayButton: HTMLButtonElement;
+	protected errorsContacts: HTMLElement;
 
 	constructor(container: HTMLFormElement, actions: IContactActions) {
 		super(container);
@@ -24,6 +25,7 @@ export class Contacts extends Component<IContact> {
 		this.emailInput = ensureElement<HTMLInputElement>('input[name=email]', this.container);
 		this.phoneInput = ensureElement<HTMLInputElement>('input[name=phone]', this.container);
 		this.toPayButton = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
+		this.errorsContacts = ensureElement<HTMLElement>('.form__errors', this.container);
 
 		this.emailInput.addEventListener('input', actions.onEmailInput);
 		this.phoneInput.addEventListener('input', actions.onPhoneInput);
@@ -40,6 +42,10 @@ export class Contacts extends Component<IContact> {
 
 	set valid(valid: boolean) {
 		this.setDisabled(this.toPayButton, !valid);
+	}
+
+	set error(value: string) {
+		this.errorsContacts.textContent = value;
 	}
 
 
