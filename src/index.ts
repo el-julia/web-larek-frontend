@@ -7,7 +7,7 @@ import { EventEmitter } from './components/base/Events';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Page } from './components/view/Page';
 import { Modal } from './components/view/Modal';
-import { Payment, Product } from './types';
+import { Product } from './types';
 import { CatalogEvents } from './components/events/CatalogEvents';
 import { Catalog } from './components/model/Catalog';
 import { ModalEvents } from './components/events/ModalEvents';
@@ -20,8 +20,11 @@ import { CardBasket } from './components/view/basket/CardBasket';
 import { IOrderChange, Order as OrderModel } from './components/model/Order';
 import { Order } from './components/view/checkout/Order';
 import { CheckoutEvent } from './components/events/CheckoutEvents';
-import { Contacts, IContact } from './components/view/checkout/Contacts';
-import { Contacts as ContactsModel, IContactsChange } from './components/model/Contacts';
+import { Contacts } from './components/view/checkout/Contacts';
+import {
+	Contacts as ContactsModel,
+	IContactsChange,
+} from './components/model/Contacts';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -43,9 +46,10 @@ const page = new Page(document.body, {
 });
 
 // модель данных приложения
-const productsModel = new Catalog({}, events);
-const basketModel = new BasketModel({}, events);
-const orderModel = new OrderModel({}, events);
+const productsModel = new Catalog(events);
+const basketModel = new BasketModel(events);
+const orderModel = new OrderModel(events);
+const contactModel = new ContactsModel(events);
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
@@ -54,15 +58,26 @@ const basket = new Basket(cloneTemplate(basketTemplate), {
 });
 
 const order = new Order(cloneTemplate(orderTemplate), {
-	onOnlineClick: () => events.emit<Payment>(CheckoutEvent.PAYMENT_SELECT, 'online'),
-	onOfflineClick: () => events.emit<Payment>(CheckoutEvent.PAYMENT_SELECT, 'offline'),
+	onOnlineClick: () =>
+		events.emit<Pick<IOrderChange, 'payment'>>(CheckoutEvent.PAYMENT_SELECT, {
+			payment: 'online',
+		}),
+
+	onOfflineClick: () =>
+		events.emit<Pick<IOrderChange, 'payment'>>(CheckoutEvent.PAYMENT_SELECT, {
+			payment: 'offline',
+		}),
+
 	onProceedButtonClick: (event) => {
 		event.preventDefault();
 		events.emit(ModalEvents.CONTACTS);
 	},
+
 	onAddressInput: (event) => {
 		const target = event.target as HTMLInputElement;
-		events.emit(CheckoutEvent.ADDRESS_INPUT, target.value)
+		events.emit<Pick<IOrderChange, 'address'>>(CheckoutEvent.ADDRESS_INPUT, {
+			address: target.value,
+		});
 	},
 });
 
@@ -70,17 +85,21 @@ const order = new Order(cloneTemplate(orderTemplate), {
 const contacts = new Contacts(cloneTemplate(contactsTemplate), {
 	onEmailInput: (event) => {
 		const target = event.target as HTMLInputElement;
-		events.emit(CheckoutEvent.EMAIL_INPUT, target.value)
+		events.emit<Pick<IContactsChange, 'email'>>(CheckoutEvent.EMAIL_INPUT, {
+			email: target.value,
+		});
 	},
 	onPhoneInput: (event) => {
 		const target = event.target as HTMLInputElement;
-		events.emit(CheckoutEvent.PHONE_INPUT, target.value)
+		events.emit<Pick<IContactsChange, 'phone'>>(CheckoutEvent.PHONE_INPUT, {
+			phone: target.value,
+		});
 	},
 	onToPayButtonClick: (event) => {
 		event.preventDefault();
 		console.log('pay');
-	}
-})
+	},
+});
 
 let productCardPreview: CardPreview;
 
@@ -204,28 +223,38 @@ events.on(ModalEvents.CLOSE, () => {
 	page.locked = false;
 });
 
-events.on(CheckoutEvent.PAYMENT_SELECT, (payment: Payment) => {
-	orderModel.setPayment(payment);
-})
+events.on(CheckoutEvent.PAYMENT_SELECT, (data: Pick<IOrderChange, 'payment'>) => {
+	orderModel.setPayment(data.payment);
+});
 
-events.on(CheckoutEvent.ADDRESS_INPUT, (address: string) => {
-	orderModel.setAddress(address);
-})
+events.on(CheckoutEvent.ADDRESS_INPUT, (data: Pick<IOrderChange, 'address'>) => {
+	orderModel.setAddress(data.address);
+});
 
 events.on(CheckoutEvent.ORDER_CHANGED, (data: IOrderChange) => {
-	order.payment = data.payment
-	order.address = data.address
-	order.valid = data.valid
-})
-
+	order.payment = data.payment;
+	order.address = data.address;
+	order.valid = data.valid;
+});
 
 events.on(CheckoutEvent.CONTACTS_CHANGED, (data: IContactsChange) => {
-	contacts.email = data.email
-	contacts.phone = data.phone
-	contacts.valid = data.valid
-})
+	contacts.email = data.email;
+	contacts.phone = data.phone;
+	contacts.valid = data.valid;
+});
 
+//откуда это data приходит?
 
+events.on(CheckoutEvent.EMAIL_INPUT, (data: Pick<IContactsChange, 'email'>) => {
+	contactModel.setEmail(data.email);
+});
+
+events.on(CheckoutEvent.PHONE_INPUT, (data: Pick<IContactsChange, 'phone'>) => {
+	contactModel.setPhone(data.phone);
+});
+
+//а как понять что нужно email передать
+//и откуда придет
 
 // для разработки
 events.on(CatalogEvents.CHANGED, (products: Product[]) => {
