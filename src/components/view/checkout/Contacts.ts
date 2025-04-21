@@ -27,7 +27,7 @@ export class Contacts extends Component<IContact> {
 
 		this.emailInput.addEventListener('input', actions.onEmailInput);
 		this.phoneInput.addEventListener('input', actions.onPhoneInput);
-
+		this.toPayButton.addEventListener('click', actions.onToPayButtonClick);
 	}
 
 	set email(email: string) {
