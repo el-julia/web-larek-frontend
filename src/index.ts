@@ -14,7 +14,7 @@ import { ModalEvents } from './components/events/ModalEvents';
 import { BasketEvents } from './components/events/BasketEvents';
 import { CardCatalog } from './components/view/card/CardCatalog';
 import { CardPreview } from './components/view/card/CardPreview';
-import { Basket as BasketModel } from './components/model/Basket';
+import { Basket as BasketModel, IBasketData } from './components/model/Basket';
 import { Basket } from './components/view/basket/Basket';
 import { CardBasket } from './components/view/basket/CardBasket';
 import { IOrderChange, Order as OrderModel } from './components/model/Order';
@@ -196,18 +196,18 @@ events.on(BasketEvents.CLEAR, () => {
 	basketModel.clear();
 });
 
-events.on(BasketEvents.CHANGED, (products: Product[]) => {
-	page.counter = products.length;
+events.on(BasketEvents.CHANGED, (data: IBasketData) => {
+	page.counter = data.products.length;
 });
 
-events.on(BasketEvents.CHANGED, (products: Product[]) => {
+events.on(BasketEvents.CHANGED, (data: IBasketData) => {
 	if (productCardPreview !== undefined) {
-		productCardPreview.basketProducts = products;
+		productCardPreview.basketProducts = data.products;
 	}
 });
 
-events.on(BasketEvents.CHANGED, (products: Product[]) => {
-	const cardBasketItems = products.map((product, index) => {
+events.on(BasketEvents.CHANGED, (data: IBasketData) => {
+	const cardBasketItems = data.products.map((product, index) => {
 		const cardBasket = new CardBasket(cloneTemplate(cardBasketTemplate), {
 			onCardButtonDeleteClick: () => events.emit(BasketEvents.REMOVE, product),
 		});
@@ -221,7 +221,7 @@ events.on(BasketEvents.CHANGED, (products: Product[]) => {
 
 	basket.render({
 		items: cardBasketItems,
-		total: products.reduce((total, item) => total + item.price, 0),
+		total: data.total,
 	});
 });
 

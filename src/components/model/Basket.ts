@@ -2,7 +2,7 @@ import { Model } from '../base/Model';
 import { Product } from '../../types';
 import { BasketEvents } from '../events/BasketEvents';
 
-interface IBasketData {
+export interface IBasketData {
 	products: Product[];
 	total: number;
 }
