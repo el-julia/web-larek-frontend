@@ -51,7 +51,7 @@ export class Order extends Component<IOrder> {
 		this.setDisabled(this.orderButton, !valid);
 	}
 
-	set payment(payment: Payment) {
+	set payment(payment: Payment | undefined) {
 		this.toggleClass(
 			this.buttonOnline,
 			'button_alt-active',
