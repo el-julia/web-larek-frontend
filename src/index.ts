@@ -228,6 +228,10 @@ events.on(ModalEvents.SUCCESS, () => {
 	modal.render({
 		content: success.render({}),
 	})
+});
+
+events.on(ModalEvents.NONE, () => {
+	modal.close();
 })
 
 // Блокируем прокрутку страницы если открыта модалка
