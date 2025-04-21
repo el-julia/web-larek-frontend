@@ -111,6 +111,7 @@ const contacts = new Contacts(cloneTemplate(contactsTemplate), {
 		api
 			.orderProducts({
 				items: basketModel.getProducts().map((product) => product.id),
+				total: basketModel.getTotal(),
 				payment: orderModel.getPayment(),
 				address: orderModel.getAddress(),
 				email: contactModel.getEmail(),
