@@ -1,3 +1,3 @@
 export enum SuccessEvent {
-	SUCCESS = 'success: changed',
+	CHANGED = 'success:changed',
 }

@@ -1,8 +1,9 @@
 import { Model } from '../base/Model';
 import { Product } from '../../types';
+import { CatalogEvents } from '../events/CatalogEvents';
 
-export class Catalog extends Model<Product[]> {
+export class Catalog extends Model {
 	setProducts(products: Product[]) {
-		this.changed(products);
+		this.emitChanges(CatalogEvents.CHANGED, products);
 	}
 }

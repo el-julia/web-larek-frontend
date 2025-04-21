@@ -7,7 +7,7 @@ export interface IContactsChange {
 	valid: boolean;
 }
 
-export class Contacts extends Model<IContactsChange> {
+export class Contacts extends Model {
 	private email = '';
 	private phone = '';
 
@@ -22,10 +22,10 @@ export class Contacts extends Model<IContactsChange> {
 	}
 
 	private contactsChanged() {
-		this.changed({
+		this.emitChanges(CheckoutEvent.CONTACTS_CHANGED, {
 			email: this.email,
 			phone: this.phone,
 			valid: this.email.length > 0 && this.phone.length > 0,
-		})
+		} as IContactsChange);
 	}
 }

@@ -1,7 +1,8 @@
 import { Model } from '../base/Model';
 import { Product } from '../../types';
+import { BasketEvents } from '../events/BasketEvents';
 
-export class Basket extends Model<Product[]> {
+export class Basket extends Model {
 	private products: Product[] = [];
 
 	getProducts(): Product[] {
@@ -10,18 +11,18 @@ export class Basket extends Model<Product[]> {
 
 	add(product: Product) {
 		this.products.push(product);
-		this.changed(this.products);
+		this.emitChanges(BasketEvents.CHANGED, this.products);
 	}
 
 	remove(product: Product) {
 		this.products = this.products.filter(
 			(cartProduct) => cartProduct.id !== product.id
 		);
-		this.changed(this.products);
+		this.emitChanges(BasketEvents.CHANGED, this.products);
 	}
 
 	clear() {
 		this.products = [];
-		this.changed(this.products);
+		this.emitChanges(BasketEvents.CHANGED, this.products);
 	}
 }

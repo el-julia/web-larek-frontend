@@ -25,7 +25,7 @@ import {
 	Contacts as ContactsModel,
 	IContactsChange,
 } from './components/model/Contacts';
-import { Success as SuccessModel } from './components/model/Success';
+import { ISuccess, Success as SuccessModel } from './components/model/Success';
 import { SuccessEvent } from './components/events/SuccessEvent';
 import { Success } from './components/view/Success';
 
@@ -49,11 +49,11 @@ const page = new Page(document.body, {
 });
 
 // модель данных приложения
-const catalogModel = new Catalog(events, CatalogEvents.CHANGED);
-const basketModel = new BasketModel(events, BasketEvents.CHANGED);
-const orderModel = new OrderModel(events, CheckoutEvent.ORDER_CHANGED);
-const contactModel = new ContactsModel(events, CheckoutEvent.CONTACTS_CHANGED);
-const successModel = new SuccessModel(events, SuccessEvent.SUCCESS)
+const catalogModel = new Catalog(events);
+const basketModel = new BasketModel(events);
+const orderModel = new OrderModel(events);
+const contactModel = new ContactsModel(events);
+const successModel = new SuccessModel(events);
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
@@ -89,8 +89,8 @@ const success = new Success(cloneTemplate(successTemplate), {
 	onSuccessButtonClick: (event) => {
 		event.preventDefault();
 		events.emit(ModalEvents.NONE);
-	}
-})
+	},
+});
 
 //рендер последнего шага формы
 const contacts = new Contacts(cloneTemplate(contactsTemplate), {
@@ -126,7 +126,7 @@ api
 	});
 
 // рендерим список товаров на странице
-catalogModel.subscribe(products => {
+events.on(CatalogEvents.CHANGED, (products: Product[]) => {
 	page.catalog = products.map((product) => {
 		const card = new CardCatalog(cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit(ModalEvents.PRODUCT_PREVIEW, product),
@@ -182,17 +182,17 @@ events.on(BasketEvents.CLEAR, () => {
 	basketModel.clear();
 });
 
-basketModel.subscribe(products => {
+events.on(BasketEvents.CHANGED, (products: Product[]) => {
 	page.counter = products.length;
 });
 
-basketModel.subscribe(products => {
+events.on(BasketEvents.CHANGED, (products: Product[]) => {
 	if (productCardPreview !== undefined) {
 		productCardPreview.basketProducts = products;
 	}
 });
 
-basketModel.subscribe(products => {
+events.on(BasketEvents.CHANGED, (products: Product[]) => {
 	const cardBasketItems = products.map((product, index) => {
 		const cardBasket = new CardBasket(cloneTemplate(cardBasketTemplate), {
 			onCardButtonDeleteClick: () => events.emit(BasketEvents.REMOVE, product),
@@ -209,7 +209,7 @@ basketModel.subscribe(products => {
 		items: cardBasketItems,
 		total: products.reduce((total, item) => total + item.price, 0),
 	});
-})
+});
 
 //оформление заказа по клику оформить в корзине
 
@@ -228,12 +228,12 @@ events.on(ModalEvents.CONTACTS, () => {
 events.on(ModalEvents.SUCCESS, () => {
 	modal.render({
 		content: success.render({}),
-	})
+	});
 });
 
 events.on(ModalEvents.NONE, () => {
 	modal.close();
-})
+});
 
 // Блокируем прокрутку страницы если открыта модалка
 events.on(ModalEvents.OPEN, () => {
@@ -245,27 +245,33 @@ events.on(ModalEvents.CLOSE, () => {
 	page.locked = false;
 });
 
-events.on(CheckoutEvent.PAYMENT_SELECT, (data: Pick<IOrderChange, 'payment'>) => {
-	orderModel.setPayment(data.payment);
-});
+events.on(
+	CheckoutEvent.PAYMENT_SELECT,
+	(data: Pick<IOrderChange, 'payment'>) => {
+		orderModel.setPayment(data.payment);
+	}
+);
 
-events.on(CheckoutEvent.ADDRESS_INPUT, (data: Pick<IOrderChange, 'address'>) => {
-	orderModel.setAddress(data.address);
-});
+events.on(
+	CheckoutEvent.ADDRESS_INPUT,
+	(data: Pick<IOrderChange, 'address'>) => {
+		orderModel.setAddress(data.address);
+	}
+);
 
-orderModel.subscribe(data => {
+events.on(CheckoutEvent.ORDER_CHANGED, (data: IOrderChange) => {
 	order.payment = data.payment;
 	order.address = data.address;
 	order.valid = data.valid;
 });
 
-contactModel.subscribe(data => {
+events.on(CheckoutEvent.CONTACTS_CHANGED, (data: IContactsChange) => {
 	contacts.email = data.email;
 	contacts.phone = data.phone;
 	contacts.valid = data.valid;
 });
 
-successModel.subscribe(data => {
+events.on(SuccessEvent.CHANGED, (data: ISuccess) => {
 	success.total = data.total;
 });
 
@@ -280,6 +286,6 @@ events.on(CheckoutEvent.PHONE_INPUT, (data: Pick<IContactsChange, 'phone'>) => {
 
 // для разработки
 //catalogModel.subscribe(products => {
-	//events.emit(BasketEvents.ADD, products.pop());
-	//events.emit(ModalEvents.CONTACTS);
+//events.emit(BasketEvents.ADD, products.pop());
+//events.emit(ModalEvents.CONTACTS);
 //})

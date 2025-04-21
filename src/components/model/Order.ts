@@ -1,14 +1,15 @@
 import { Model } from '../base/Model';
 import { Payment } from '../../types';
+import { CheckoutEvent } from '../events/CheckoutEvents';
 
 export interface IOrderChange {
 	payment?: Payment;
 	address: string;
 	valid: boolean;
+	errors: Error[];
 }
 
-
-export class Order extends Model<IOrderChange> {
+export class Order extends Model {
 	private payment?: Payment;
 	private address = '';
 
@@ -18,11 +19,11 @@ export class Order extends Model<IOrderChange> {
 	}
 
 	private orderChanged() {
-		this.changed({
+		this.emitChanges(CheckoutEvent.ORDER_CHANGED, {
 			payment: this.payment,
 			address: this.address,
 			valid: this.payment !== undefined && this.address.length > 0,
-		})
+		} as IOrderChange);
 	}
 
 	setAddress(address: string) {
