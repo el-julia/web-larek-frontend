@@ -1,5 +1,5 @@
-import { Component } from '../base/Component';
 import { ensureElement, formatNumber } from '../../utils/utils';
+import { AView } from '../base/AView';
 
 export interface ISuccessAction {
 	onSuccessButtonClick: (event: MouseEvent) => void;
@@ -9,27 +9,32 @@ export interface ISuccess {
 	total: number;
 }
 
-export class Success extends Component<ISuccess> {
-	protected totalSuccess: HTMLElement;
-	protected buttonSuccess: HTMLButtonElement;
+export class Success extends AView<ISuccess> {
+	protected description: HTMLElement;
+	protected button: HTMLButtonElement;
 
 	constructor(container: HTMLElement, actions: ISuccessAction ) {
 		super(container);
 
-		this.totalSuccess = ensureElement<HTMLElement>('.order-success__description', this.container);
-		this.buttonSuccess = ensureElement<HTMLButtonElement>('.order-success__close', this.container);
+		this.description = ensureElement<HTMLElement>('.order-success__description', this.container);
+		this.button = ensureElement<HTMLButtonElement>('.order-success__close', this.container);
 
-		this.buttonSuccess.addEventListener('click', actions.onSuccessButtonClick);
+		this.button.addEventListener('click', actions.onSuccessButtonClick);
 
-		this.total = 0;
+		this.setTotal(0);
 	}
 
-	set total(total: number) {
-		if (total > 0) {
-			this.setText(this.totalSuccess, `Списано ${formatNumber(total)} синапсов`);
-		} else {
-			this.setText(this.totalSuccess, '');
+	protected doRender(data: Partial<ISuccess>): void {
+		if (data.total !== undefined) {
+			this.setTotal(data.total);
 		}
 	}
 
+	private setTotal(total: number) {
+		if (total > 0) {
+			this.setText(this.description, `Списано ${formatNumber(total)} синапсов`);
+		} else {
+			this.setText(this.description, '');
+		}
+	}
 }

@@ -142,18 +142,22 @@ api
 
 // рендерим список товаров на странице
 events.on(CatalogEvents.CHANGED, (products: Product[]) => {
-	page.catalog = products.map((product) => {
+	const content = products.map((product) => {
 		const card = new CardCatalog(cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit(ModalEvents.PRODUCT_PREVIEW, product),
 		});
 
 		return card.render({
-			productId: product.id,
-			productCategory: product.category,
-			productTitle: product.title,
-			productImage: product.image,
-			productPrice: product.price,
+			id: product.id,
+			category: product.category,
+			title: product.title,
+			image: product.image,
+			price: product.price,
 		});
+	});
+	
+	page.render({
+		catalog: content,
 	});
 });
 
@@ -165,12 +169,12 @@ events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
 
 	modal.render({
 		content: productCardPreview.render({
-			productId: product.id,
-			productCategory: product.category,
-			productTitle: product.title,
-			productImage: product.image,
-			productDescription: product.description,
-			productPrice: product.price,
+			id: product.id,
+			category: product.category,
+			title: product.title,
+			image: product.image,
+			description: product.description,
+			price: product.price,
 			basketProducts: basketModel.getProducts(),
 		}),
 	});
@@ -198,12 +202,16 @@ events.on(BasketEvents.CLEAR, () => {
 });
 
 events.on(BasketEvents.CHANGED, (data: IBasketData) => {
-	page.counter = data.products.length;
+	page.render({
+		counter: data.products.length,
+	})
 });
 
 events.on(BasketEvents.CHANGED, (data: IBasketData) => {
 	if (productCardPreview !== undefined) {
-		productCardPreview.basketProducts = data.products;
+		productCardPreview.render({
+			basketProducts: data.products,
+		});
 	}
 });
 
@@ -252,12 +260,16 @@ events.on(ModalEvents.NONE, () => {
 
 // Блокируем прокрутку страницы если открыта модалка
 events.on(ModalEvents.OPEN, () => {
-	page.locked = true;
+	page.render({
+		locked: true,
+	})
 });
 
 // ... и разблокируем
 events.on(ModalEvents.CLOSE, () => {
-	page.locked = false;
+	page.render({
+		locked: false,
+	})
 });
 
 events.on(
@@ -275,21 +287,27 @@ events.on(
 );
 
 events.on(CheckoutEvent.ORDER_CHANGED, (data: IOrderChange) => {
-	order.payment = data.payment;
-	order.address = data.address;
-	order.valid = data.valid;
-	order.error = data.error;
+	order.render({
+		payment: data.payment,
+		address: data.address,
+		valid: data.valid,
+		error: data.error,
+	});
 });
 
 events.on(CheckoutEvent.CONTACTS_CHANGED, (data: IContactsChange) => {
-	contacts.email = data.email;
-	contacts.phone = data.phone;
-	contacts.valid = data.valid;
-	contacts.error = data.error;
+	contacts.render({
+		email: data.email,
+		phone: data.phone,
+		valid: data.valid,
+		error: data.error,
+	});
 });
 
 events.on(SuccessEvent.CHANGED, (data: ISuccess) => {
-	success.total = data.total;
+	success.render({
+		total: data.total,
+	})
 });
 
 events.on(CheckoutEvent.EMAIL_INPUT, (data: Pick<IContactsChange, 'email'>) => {

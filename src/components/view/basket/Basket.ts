@@ -1,9 +1,9 @@
-import { Component } from '../../base/Component';
 import {
 	createElement,
 	ensureElement,
 	formatNumber,
 } from '../../../utils/utils';
+import { AView } from '../../base/AView';
 
 export interface IBasketAction {
 	onClick: (event: MouseEvent) => void;
@@ -14,7 +14,7 @@ interface IBasketView {
 	total: number;
 }
 
-export class Basket extends Component<IBasketView> {
+export class Basket extends AView<IBasketView> {
 
 	protected basketList: HTMLElement;
 	protected basketTotal: HTMLElement;
@@ -29,30 +29,38 @@ export class Basket extends Component<IBasketView> {
 
 		this.buttonBasket.addEventListener('click', actions.onClick);
 
-		this.items = [];
-		this.total = 0;
+		this.setItems([])
+		this.setTotal(0)
 	}
 
-	set items(items: HTMLElement[]) {
+	protected doRender(data: Partial<IBasketView>): void {
+		if (data.items !== undefined) {
+			this.setItems(data.items);
+		}
+
+		if (data.total !== undefined) {
+			this.setTotal(data.total);
+		}
+	}
+
+	private setItems(items: HTMLElement[]) {
 		if(items.length) {
 			this.basketList.replaceChildren(...items);
 			this.setDisabled(this.buttonBasket, false);
 		} else {
 			this.basketList.replaceChildren(createElement<HTMLParagraphElement>('p', {
-				textContent: 'Корзина пуста'
+				textContent: 'Корзина пуста',
 			}));
 
 			this.setDisabled(this.buttonBasket, true);
 		}
 	}
 
-	set total(total: number) {
+	private setTotal(total: number) {
 		if (total > 0) {
 			this.setText(this.basketTotal, `${formatNumber(total)} синапсов`);
 		} else {
 			this.setText(this.basketTotal, '');
 		}
 	}
-
-
 }

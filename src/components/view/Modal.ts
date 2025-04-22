@@ -1,49 +1,53 @@
-import { Component } from '../base/Component';
 import { IEvents } from '../base/Events';
 import { ensureElement } from '../../utils/utils';
 import { ModalEvents } from '../events/ModalEvents';
+import { AView } from '../base/AView';
 
 interface IModalData {
 	content: HTMLElement;
 }
 
-export class Modal extends Component<IModalData>{
+export class Modal extends AView<IModalData> {
 	protected closeButton: HTMLButtonElement;
-	protected modalContent: HTMLElement;
+	protected content: HTMLElement;
 
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
 
-		this.closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
-		this.modalContent = ensureElement<HTMLElement>('.modal__content', container);
+		this.closeButton = ensureElement<HTMLButtonElement>(
+			'.modal__close',
+			container
+		);
+		this.content = ensureElement<HTMLElement>('.modal__content', container);
 
 		this.closeButton.addEventListener('click', this.close.bind(this));
 		this.container.addEventListener('click', this.close.bind(this));
-		this.modalContent.addEventListener('click', (event) => event.stopPropagation());
+		this.content.addEventListener('click', (event) => event.stopPropagation());
 	}
 
-	set content(value: HTMLElement | null) {
-		if (value) {
-			this.modalContent.replaceChildren(value);
-		} else {
-			this.modalContent.replaceChildren();
+	protected doRender(data: Partial<IModalData>): void {
+		if (data.content !== undefined) {
+			this.setContent(data.content);
+			this.open();
 		}
 	}
 
-	open(): void  {
+	private setContent(value: HTMLElement | null) {
+		if (value) {
+			this.content.replaceChildren(value);
+		} else {
+			this.content.replaceChildren();
+		}
+	}
+
+	open(): void {
 		this.container.classList.add('modal_active');
 		this.events.emit(ModalEvents.OPEN);
 	}
 
 	close(): void {
 		this.container.classList.remove('modal_active');
-		this.content = null;
+		this.setContent(null);
 		this.events.emit(ModalEvents.CLOSE);
-	}
-
-	render(data: IModalData): HTMLElement {
-		super.render(data);
-		this.open();
-		return this.container;
 	}
 }

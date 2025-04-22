@@ -1,21 +1,21 @@
-import { Component } from '../../base/Component';
 import { ensureElement } from '../../../utils/utils';
 import { ProductCategory } from '../../../types';
+import { AView } from '../../base/AView';
 
 export interface ICardActions {
 	onClick: (event: MouseEvent) => void;
 }
 
 export interface ICard {
-	productId: string;
-	productCategory: ProductCategory;
-	productTitle: string;
-	productImage: string;
-	productPrice: number;
-	productDescription?: string;
+	id: string;
+	category: ProductCategory;
+	title: string;
+	image: string;
+	price: number | null;
+	description: string;
 }
 
-export abstract class Card<T extends ICard> extends Component<T> {
+export abstract class Card<RenderData extends ICard> extends AView<RenderData> {
 	protected category: HTMLElement;
 	protected title: HTMLElement;
 	protected image: HTMLImageElement;
@@ -41,32 +41,34 @@ export abstract class Card<T extends ICard> extends Component<T> {
 		}
 	}
 
-	private set productId(value: string) {
-		this.container.dataset.id = value;
+	protected doRender(data: Partial<RenderData>) {
+		if (data.title !== undefined) {
+			this.setText(this.title, data.title);
+		}
+
+		if (data.image !== undefined) {
+			this.setImage(this.image, data.image, data.title);
+		}
+
+		if (data.category !== undefined) {
+			this.setProductCategory(data.category);
+		}
+
+		if (data.price !== undefined) {
+			this.setProductPrice(data.price);
+		}
+
+		if (data.description !== undefined) {
+			this.setProductDescription(data.description);
+		}
 	}
 
-	get productId(): string {
-		return this.container.dataset.id || '';
-	}
-
-	set productTitle(value: string) {
-		this.setText(this.title, value);
-	}
-
-	get productTitle(): string {
-		return this.title.textContent || '';
-	}
-
-	set productImage(value: string) {
-		this.setImage(this.image, value, this.productTitle);
-	}
-
-	set productCategory(value: ProductCategory) {
+	private setProductCategory(value: ProductCategory) {
 		this.setText(this.category, value);
-		this.toggleClass(this.category, this.getProductCategory(value), true);
+		this.toggleClass(this.category, this.getProductCategoryClass(value), true);
 	}
 
-	private getProductCategory(
+	private getProductCategoryClass(
 		value: 'софт-скил' | 'хард-скил' | 'дополнительное' | 'кнопка' | string
 	) {
 		let category: string;
@@ -90,7 +92,7 @@ export abstract class Card<T extends ICard> extends Component<T> {
 		return 'card__category' + category;
 	}
 
-	set productPrice(price: number) {
+	private setProductPrice(price: number | null) {
 		if (price === null) {
 			this.setText(this.price, `Бесценно`);
 		} else {
@@ -98,7 +100,7 @@ export abstract class Card<T extends ICard> extends Component<T> {
 		}
 	}
 
-	set productText(value: string) {
+	private setProductDescription(value: string) {
 		if (this.description) {
 			this.setText(this.description, value);
 		}

@@ -1,5 +1,5 @@
 import { ensureElement } from '../../../utils/utils';
-import { Component } from '../../base/Component';
+import { AView } from '../../base/AView';
 
 export interface IContactActions {
 	onEmailInput: (event: Event) => void;
@@ -11,42 +11,55 @@ export interface IContact {
 	valid: boolean;
 	email: string;
 	phone: string;
+	error: string;
 }
 
-export class Contacts extends Component<IContact> {
+export class Contacts extends AView<IContact> {
 	protected emailInput: HTMLInputElement;
 	protected phoneInput: HTMLInputElement;
 	protected toPayButton: HTMLButtonElement;
-	protected errorsContacts: HTMLElement;
+	protected errors: HTMLElement;
 
 	constructor(container: HTMLFormElement, actions: IContactActions) {
 		super(container);
 
-		this.emailInput = ensureElement<HTMLInputElement>('input[name=email]', this.container);
-		this.phoneInput = ensureElement<HTMLInputElement>('input[name=phone]', this.container);
-		this.toPayButton = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
-		this.errorsContacts = ensureElement<HTMLElement>('.form__errors', this.container);
+		this.emailInput = ensureElement<HTMLInputElement>(
+			'input[name=email]',
+			this.container
+		);
+		this.phoneInput = ensureElement<HTMLInputElement>(
+			'input[name=phone]',
+			this.container
+		);
+		this.toPayButton = ensureElement<HTMLButtonElement>(
+			'button[type=submit]',
+			this.container
+		);
+		this.errors = ensureElement<HTMLElement>(
+			'.form__errors',
+			this.container
+		);
 
 		this.emailInput.addEventListener('input', actions.onEmailInput);
 		this.phoneInput.addEventListener('input', actions.onPhoneInput);
 		this.toPayButton.addEventListener('click', actions.onToPayButtonClick);
 	}
 
-	set email(email: string) {
-		this.emailInput.value = email;
+	protected doRender(data: Partial<IContact>): void {
+		if (data.valid !== undefined) {
+			this.setDisabled(this.toPayButton, !data.valid);
+		}
+
+		if (data.email !== undefined) {
+			this.emailInput.value = data.email;
+		}
+
+		if (data.phone !== undefined) {
+			this.phoneInput.value = data.phone;
+		}
+
+		if (data.error !== undefined) {
+			this.errors.textContent = data.error;
+		}
 	}
-
-	set phone(phone: string) {
-		this.phoneInput.value = phone;
-	}
-
-	set valid(valid: boolean) {
-		this.setDisabled(this.toPayButton, !valid);
-	}
-
-	set error(value: string) {
-		this.errorsContacts.textContent = value;
-	}
-
-
 }

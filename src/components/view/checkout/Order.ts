@@ -1,6 +1,6 @@
-import { Component } from '../../base/Component';
 import { ensureElement } from '../../../utils/utils';
 import { Payment } from '../../../types';
+import { AView } from '../../base/AView';
 
 export interface IOrderActions {
 	onOnlineClick: (event: MouseEvent) => void;
@@ -16,12 +16,12 @@ interface IOrder {
 	error: string;
 }
 
-export class Order extends Component<IOrder> {
+export class Order extends AView<IOrder> {
 	protected buttonOnline: HTMLButtonElement;
 	protected buttonOffline: HTMLButtonElement;
 	protected addressInput: HTMLInputElement;
-	protected orderButton: HTMLButtonElement;
-	protected errorsOrder: HTMLElement;
+	protected proceedButton: HTMLButtonElement;
+	protected errors: HTMLElement;
 
 	constructor(container: HTMLFormElement, actions: IOrderActions) {
 		super(container);
@@ -38,42 +38,47 @@ export class Order extends Component<IOrder> {
 			'input[name=address]',
 			this.container
 		);
-		this.orderButton = ensureElement<HTMLButtonElement>(
+		this.proceedButton = ensureElement<HTMLButtonElement>(
 			'button[type=submit]',
 			this.container
 		);
 
-		this.errorsOrder = ensureElement<HTMLElement>('.form__errors', this.container);
+		this.errors = ensureElement<HTMLElement>('.form__errors', this.container);
 
 		this.buttonOnline.addEventListener('click', actions.onOnlineClick);
 		this.buttonOffline.addEventListener('click', actions.onOfflineClick);
-		this.orderButton.addEventListener('click', actions.onProceedButtonClick);
+		this.proceedButton.addEventListener('click', actions.onProceedButtonClick);
 		this.addressInput.addEventListener('input', actions.onAddressInput);
 	}
 
-	set valid(valid: boolean) {
-		this.setDisabled(this.orderButton, !valid);
+	protected doRender(data: Partial<IOrder>): void {
+		if (data.valid !== undefined) {
+			this.setDisabled(this.proceedButton, !data.valid);
+		}
+
+		if (data.payment !== undefined) {
+			this.setPayment(data.payment);
+		}
+
+		if (data.address !== undefined) {
+			this.addressInput.value = data.address;
+		}
+
+		if (data.error !== undefined) {
+			this.errors.textContent = data.error;
+		}
 	}
 
-	set payment(payment: Payment | undefined) {
+	private setPayment(payment: Payment | undefined) {
 		this.toggleClass(
 			this.buttonOnline,
 			'button_alt-active',
-			payment === 'card',
+			payment === 'card'
 		);
 		this.toggleClass(
 			this.buttonOffline,
 			'button_alt-active',
-			payment === 'cash',
+			payment === 'cash'
 		);
 	}
-
-	set address(address: string) {
-		this.addressInput.value = address;
-	}
-
-	set error(value: string) {
-		this.errorsOrder.textContent = value;
-	}
-
 }

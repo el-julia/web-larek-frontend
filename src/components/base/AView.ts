@@ -1,13 +1,7 @@
+export abstract class AView<RenderData extends object> {
+	private data: Partial<RenderData> = {};
 
-
-/**
- * Базовый компонент
- * TODO: отказаться, от магии сеттеров
- */
-export abstract class Component<T> {
-	protected constructor(protected readonly container: HTMLElement) {
-		// Учитывайте что код в конструкторе исполняется ДО всех объявлений в дочернем классе
-	}
+	protected constructor(protected readonly container: HTMLElement) {}
 
 	// Инструментарий для работы с DOM в дочерних компонентах
 
@@ -31,17 +25,7 @@ export abstract class Component<T> {
 		}
 	}
 
-	// Скрыть
-	protected setHidden(element: HTMLElement) {
-		element.style.display = 'none';
-	}
-
-	// Показать
-	protected setVisible(element: HTMLElement) {
-		element.style.removeProperty('display');
-	}
-
-	// Установить изображение с алтернативным текстом
+	// Установить изображение с альтернативным текстом
 	protected setImage(element: HTMLImageElement, src: string, alt?: string) {
 		if (element) {
 			element.src = src;
@@ -51,9 +35,18 @@ export abstract class Component<T> {
 		}
 	}
 
-	// Вернуть корневой DOM-элемент
-	render(data?: Partial<T>): HTMLElement {
-		Object.assign(this as object, data ?? {});
+	/**
+	 * Метод, который объединяет новые данные со старыми и вызывает doRender,
+	 * чтобы он отрисовал все элементы
+	 */
+	render(data: Partial<RenderData>): HTMLElement {
+		Object.assign(this.data, data);
+		this.doRender(this.data);
 		return this.container;
 	}
+
+	/**
+	 * Метод, который занимается рендерингом, специфичным для конкретного представления
+	 */
+	protected abstract doRender(data: Partial<RenderData>): void;
 }

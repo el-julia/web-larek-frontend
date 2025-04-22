@@ -1,43 +1,43 @@
-import { ICard, Card } from './Card';
+import { Card, ICard } from './Card';
 import { Product } from '../../../types';
-
 
 export interface ICardPreview extends ICard {
 	basketProducts: Product[];
 }
 
 export class CardPreview extends Card<ICardPreview> {
-	private priceless = false;
+	protected doRender(data: Partial<ICardPreview>) {
+		super.doRender(data);
 
-	set productPrice(price: number) {
-		this.priceless = price === null;
-
-		if (this.priceless) {
-			this.setButtonState(true, 'Не продаётся');
-		}
-
-		super.productPrice = price;
-	}
-
-	set basketProducts(products: Product[]) {
-		if (!this.priceless) {
-			// если в товарах корзины найден наш, то помечаем кго как добавленный
-			const addedToCart =
-				products.find(
-					(cartProduct) => cartProduct.id === this.container.dataset.id
-				) !== undefined;
-
-			if (addedToCart) {
-				this.setButtonState(true, 'Уже в корзине');
+		if (data.price === null) {
+			this.setButtonState(false, 'Не продаётся');
+		} else {
+			// если в товарах корзины найден товар карточки, тогда
+			// отключаем кнопку добавления и меняем текст
+			if (this.isAddedToCart(data)) {
+				this.setButtonState(false, 'Уже в корзине');
 			} else {
-				this.setButtonState(false, 'В корзину');
+				this.setButtonState(true, 'В корзину');
 			}
 		}
 	}
 
-	private setButtonState(disabled: boolean, text: string) {
+	private isAddedToCart(data: Partial<ICardPreview>) {
+		if (data.basketProducts !== undefined && data.id !== undefined) {
+			// проверяем что какой-то из товаров в корзине совпадает с нашим по id
+			return (
+				data.basketProducts.find(
+					(cartProduct) => cartProduct.id === data.id
+				) !== undefined
+			);
+		}
+
+		return false;
+	}
+
+	private setButtonState(enabled: boolean, text: string) {
 		if (this.button) {
-			this.setDisabled(this.button, disabled);
+			this.setDisabled(this.button, !enabled);
 			this.button.textContent = text;
 		}
 	}
