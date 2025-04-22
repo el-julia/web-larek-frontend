@@ -1,5 +1,6 @@
 import { Component } from '../../base/Component';
 import { ensureElement } from '../../../utils/utils';
+import { ProductCategory } from '../../../types';
 
 export interface ICardActions {
 	onClick: (event: MouseEvent) => void;
@@ -7,7 +8,7 @@ export interface ICardActions {
 
 export interface ICard {
 	productId: string;
-	productCategory: string;
+	productCategory: ProductCategory;
 	productTitle: string;
 	productImage: string;
 	productPrice: number;
@@ -60,8 +61,33 @@ export abstract class Card<T extends ICard> extends Component<T> {
 		this.setImage(this.image, value, this.productTitle);
 	}
 
-	set productCategory(value: string) {
+	set productCategory(value: ProductCategory) {
 		this.setText(this.category, value);
+		this.toggleClass(this.category, this.getProductCategory(value), true);
+	}
+
+	private getProductCategory(
+		value: 'софт-скил' | 'хард-скил' | 'дополнительное' | 'кнопка' | string
+	) {
+		let category: string;
+		switch (value) {
+			case 'хард-скил':
+				category = '_hard';
+				break;
+			case 'софт-скил':
+				category = '_soft';
+				break;
+			case 'кнопка':
+				category = '_button';
+				break;
+			case 'дополнительное':
+				category = '_additional';
+				break;
+			default:
+				category = '_other';
+		}
+
+		return 'card__category' + category;
 	}
 
 	set productPrice(price: number) {

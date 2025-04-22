@@ -3,7 +3,7 @@ export interface Product {
 	description: string;
 	image: string;
 	title: string;
-	category: string;
+	category: ProductCategory;
 	price: number;
 }
 
@@ -24,3 +24,5 @@ export interface IOrder {
 export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
 export type Payment = 'card' | 'cash';
+
+export type ProductCategory = 'софт-скил' | 'хард-скил' | 'дополнительное' | 'кнопка' | string;

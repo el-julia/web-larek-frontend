@@ -299,9 +299,3 @@ events.on(CheckoutEvent.EMAIL_INPUT, (data: Pick<IContactsChange, 'email'>) => {
 events.on(CheckoutEvent.PHONE_INPUT, (data: Pick<IContactsChange, 'phone'>) => {
 	contactModel.setPhone(data.phone);
 });
-
-// для разработки
-events.on(CatalogEvents.CHANGED, (products: Product[]) => {
-	events.emit(BasketEvents.ADD, products.pop());
-	events.emit(ModalEvents.ORDER);
-});
