@@ -1,4 +1,4 @@
-import { Model } from '../base/Model';
+import { AModel } from '../base/AModel';
 import { CheckoutEvent } from '../events/CheckoutEvents';
 
 export interface IContactsChange {
@@ -8,7 +8,7 @@ export interface IContactsChange {
 	error: string;
 }
 
-export class Contacts extends Model {
+export class Contacts extends AModel {
 	private _email = '';
 	private _phone = '';
 

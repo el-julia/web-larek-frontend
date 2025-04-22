@@ -1,4 +1,4 @@
-import { Model } from '../base/Model';
+import { AModel } from '../base/AModel';
 import { Product } from '../../types';
 import { BasketEvents } from '../events/BasketEvents';
 
@@ -7,7 +7,7 @@ export interface IBasketData {
 	total: number;
 }
 
-export class Basket extends Model {
+export class Basket extends AModel {
 	private products: Product[] = [];
 
 	getProducts(): Product[] {

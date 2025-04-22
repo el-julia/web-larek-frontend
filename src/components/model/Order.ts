@@ -1,4 +1,4 @@
-import { Model } from '../base/Model';
+import { AModel } from '../base/AModel';
 import { Payment } from '../../types';
 import { CheckoutEvent } from '../events/CheckoutEvents';
 
@@ -9,7 +9,7 @@ export interface IOrderChange {
 	error: string;
 }
 
-export class Order extends Model {
+export class Order extends AModel {
 	private _payment?: Payment;
 	private _address = '';
 

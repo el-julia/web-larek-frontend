@@ -1,11 +1,11 @@
-import { Model } from '../base/Model';
+import { AModel } from '../base/AModel';
 import { SuccessEvent } from '../events/SuccessEvent';
 
 export interface ISuccess {
 	total: number;
 }
 
-export class Success extends Model {
+export class Success extends AModel {
 	protected total = 0;
 
 	setTotal(total: number) {
