@@ -265,7 +265,7 @@ events.on(ModalEvents.OPEN, () => {
 	})
 });
 
-// ... и разблокируем
+// Разблокируем прокрутку страницы
 events.on(ModalEvents.CLOSE, () => {
 	page.render({
 		locked: false,
