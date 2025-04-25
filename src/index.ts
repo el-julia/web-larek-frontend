@@ -283,7 +283,7 @@ events.on(ModalEvents.CLOSE, () => {
 	page.render({
 		locked: false,
 	});
-	modalModel.close();
+	modal.close();
 });
 
 events.on(

@@ -22,8 +22,8 @@ export class ModalView extends AView<IModalData> {
 		);
 		this.content = ensureElement<HTMLElement>('.modal__content', container);
 
-		this.closeButton.addEventListener('click', this.close.bind(this));
-		this.container.addEventListener('click', this.close.bind(this));
+		this.closeButton.addEventListener('click', actions.onClose);
+		this.container.addEventListener('click', actions.onClose);
 		this.content.addEventListener('click', (event) => event.stopPropagation());
 	}
 
