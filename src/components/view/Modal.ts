@@ -1,7 +1,9 @@
-import { IEvents } from '../base/Events';
 import { ensureElement } from '../../utils/utils';
-import { ModalEvents } from '../events/ModalEvents';
 import { AView } from '../base/AView';
+
+export interface IModalActions {
+	onClose: () => void;
+}
 
 interface IModalData {
 	content: HTMLElement;
@@ -11,7 +13,7 @@ export class Modal extends AView<IModalData> {
 	protected closeButton: HTMLButtonElement;
 	protected content: HTMLElement;
 
-	constructor(container: HTMLElement, protected events: IEvents) {
+	constructor(container: HTMLElement, actions: IModalActions) {
 		super(container);
 
 		this.closeButton = ensureElement<HTMLButtonElement>(
@@ -28,7 +30,6 @@ export class Modal extends AView<IModalData> {
 	protected doRender(data: Partial<IModalData>): void {
 		if (data.content !== undefined) {
 			this.setContent(data.content);
-			this.open();
 		}
 	}
 
@@ -42,12 +43,10 @@ export class Modal extends AView<IModalData> {
 
 	open(): void {
 		this.container.classList.add('modal_active');
-		this.events.emit(ModalEvents.OPEN);
 	}
 
 	close(): void {
 		this.container.classList.remove('modal_active');
 		this.setContent(null);
-		this.events.emit(ModalEvents.CLOSE);
 	}
 }

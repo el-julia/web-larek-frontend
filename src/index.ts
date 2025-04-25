@@ -28,6 +28,7 @@ import {
 import { ISuccess, Success as SuccessModel } from './components/model/Success';
 import { SuccessEvent } from './components/events/SuccessEvent';
 import { Success } from './components/view/Success';
+import { Modal as ModalModel } from './components/model/Modal';
 
 const events = new EventEmitter();
 const api = new LarekApi(CDN_URL, API_URL);
@@ -54,8 +55,11 @@ const basketModel = new BasketModel(events);
 const orderModel = new OrderModel(events);
 const contactModel = new ContactsModel(events);
 const successModel = new SuccessModel(events);
+const modalModel = new ModalModel(events);
 
-const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
+const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), {
+	onClose: () => events.emit(ModalEvents.CLOSE),
+});
 
 const basket = new Basket(cloneTemplate(basketTemplate), {
 	onClick: () => events.emit(ModalEvents.ORDER),
@@ -178,12 +182,14 @@ events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
 			basketProducts: basketModel.getProducts(),
 		}),
 	});
+	modalModel.open();
 });
 
 events.on(ModalEvents.BASKET, () => {
 	modal.render({
 		content: basket.render({}),
 	});
+	modalModel.open();
 });
 
 // товар добавили в корзину
@@ -240,36 +246,41 @@ events.on(ModalEvents.ORDER, () => {
 	modal.render({
 		content: order.render({}),
 	});
+	modalModel.open();
 });
 
 events.on(ModalEvents.CONTACTS, () => {
 	modal.render({
 		content: contacts.render({}),
 	});
+	modalModel.open();
 });
 
 events.on(ModalEvents.SUCCESS, () => {
 	modal.render({
 		content: success.render({}),
 	});
+	modalModel.open();
 });
 
 events.on(ModalEvents.NONE, () => {
 	modal.close();
 });
 
-// Блокируем прокрутку страницы если открыта модалка
 events.on(ModalEvents.OPEN, () => {
+	// Блокируем прокрутку страницы если открыта модалка
 	page.render({
 		locked: true,
-	})
+	});
+	modal.open();
 });
 
-// Разблокируем прокрутку страницы
 events.on(ModalEvents.CLOSE, () => {
+	// Разблокируем прокрутку страницы
 	page.render({
 		locked: false,
-	})
+	});
+	modalModel.close();
 });
 
 events.on(
