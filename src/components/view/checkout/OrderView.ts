@@ -16,7 +16,7 @@ interface IOrder {
 	error: string;
 }
 
-export class Order extends AView<IOrder> {
+export class OrderView extends AView<IOrder> {
 	protected buttonOnline: HTMLButtonElement;
 	protected buttonOffline: HTMLButtonElement;
 	protected addressInput: HTMLInputElement;

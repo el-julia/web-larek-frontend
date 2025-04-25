@@ -5,7 +5,7 @@ export interface ISuccess {
 	total: number;
 }
 
-export class Success extends AModel {
+export class SuccessModel extends AModel {
 	protected total = 0;
 
 	setTotal(total: number) {

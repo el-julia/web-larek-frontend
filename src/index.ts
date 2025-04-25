@@ -1,37 +1,40 @@
 import './scss/styles.scss';
 
-import { LarekApi } from './components/model/LarekApi';
+import { LarekApiModel } from './components/model/LarekApiModel';
 import { API_URL, CDN_URL } from './utils/constants';
 
 import { EventEmitter } from './components/base/Events';
 import { cloneTemplate, ensureElement } from './utils/utils';
-import { Page } from './components/view/Page';
-import { Modal } from './components/view/Modal';
+import { PageView } from './components/view/PageView';
+import { ModalView } from './components/view/ModalView';
 import { Product } from './types';
 import { CatalogEvents } from './components/events/CatalogEvents';
-import { Catalog } from './components/model/Catalog';
+import { CatalogModel } from './components/model/CatalogModel';
 import { ModalEvents } from './components/events/ModalEvents';
 import { BasketEvents } from './components/events/BasketEvents';
-import { CardCatalog } from './components/view/card/CardCatalog';
-import { CardPreview } from './components/view/card/CardPreview';
-import { Basket as BasketModel, IBasketData } from './components/model/Basket';
-import { Basket } from './components/view/basket/Basket';
-import { CardBasket } from './components/view/basket/CardBasket';
-import { IOrderChange, Order as OrderModel } from './components/model/Order';
-import { Order } from './components/view/checkout/Order';
-import { CheckoutEvent } from './components/events/CheckoutEvents';
-import { Contacts } from './components/view/checkout/Contacts';
+import { CardCatalogView } from './components/view/card/CardCatalogView';
+import { CardPreviewView } from './components/view/card/CardPreviewView';
 import {
-	Contacts as ContactsModel,
+	BasketModel as BasketModel,
+	IBasketData,
+} from './components/model/BasketModel';
+import { BasketView } from './components/view/basket/BasketView';
+import { CardBasketView } from './components/view/basket/CardBasketView';
+import { IOrderChange, OrderModel } from './components/model/OrderModel';
+import { OrderView } from './components/view/checkout/OrderView';
+import { CheckoutEvent } from './components/events/CheckoutEvents';
+import { ContactsView } from './components/view/checkout/ContactsView';
+import {
+	ContactsModel as ContactsModel,
 	IContactsChange,
-} from './components/model/Contacts';
-import { ISuccess, Success as SuccessModel } from './components/model/Success';
+} from './components/model/ContactsModel';
+import { ISuccess, SuccessModel as SuccessModel } from './components/model/SuccessModel';
 import { SuccessEvent } from './components/events/SuccessEvent';
-import { Success } from './components/view/Success';
-import { Modal as ModalModel } from './components/model/Modal';
+import { SuccessView } from './components/view/SuccessView';
+import { ModalModel } from './components/model/ModalModel';
 
 const events = new EventEmitter();
-const api = new LarekApi(CDN_URL, API_URL);
+const api = new LarekApiModel(CDN_URL, API_URL);
 
 // шаблоны
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
@@ -44,28 +47,28 @@ const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
-const page = new Page(document.body, {
+const page = new PageView(document.body, {
 	// при клике по корзине отправляем событие открытия модального окна корзины
 	onBasketClick: () => events.emit(ModalEvents.BASKET),
 });
 
 // модель данных приложения
-const catalogModel = new Catalog(events);
+const catalogModel = new CatalogModel(events);
 const basketModel = new BasketModel(events);
 const orderModel = new OrderModel(events);
 const contactModel = new ContactsModel(events);
 const successModel = new SuccessModel(events);
 const modalModel = new ModalModel(events);
 
-const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), {
+const modal = new ModalView(ensureElement<HTMLElement>('#modal-container'), {
 	onClose: () => events.emit(ModalEvents.CLOSE),
 });
 
-const basket = new Basket(cloneTemplate(basketTemplate), {
+const basket = new BasketView(cloneTemplate(basketTemplate), {
 	onClick: () => events.emit(ModalEvents.ORDER),
 });
 
-const order = new Order(cloneTemplate(orderTemplate), {
+const order = new OrderView(cloneTemplate(orderTemplate), {
 	onOnlineClick: () =>
 		events.emit<Pick<IOrderChange, 'payment'>>(CheckoutEvent.PAYMENT_SELECT, {
 			payment: 'card',
@@ -89,7 +92,7 @@ const order = new Order(cloneTemplate(orderTemplate), {
 	},
 });
 
-const success = new Success(cloneTemplate(successTemplate), {
+const success = new SuccessView(cloneTemplate(successTemplate), {
 	onSuccessButtonClick: (event) => {
 		event.preventDefault();
 		events.emit(ModalEvents.NONE);
@@ -97,7 +100,7 @@ const success = new Success(cloneTemplate(successTemplate), {
 });
 
 //рендер последнего шага формы
-const contacts = new Contacts(cloneTemplate(contactsTemplate), {
+const contacts = new ContactsView(cloneTemplate(contactsTemplate), {
 	onEmailInput: (event) => {
 		const target = event.target as HTMLInputElement;
 		events.emit<Pick<IContactsChange, 'email'>>(CheckoutEvent.EMAIL_INPUT, {
@@ -132,7 +135,7 @@ const contacts = new Contacts(cloneTemplate(contactsTemplate), {
 	},
 });
 
-let productCardPreview: CardPreview;
+let productCardPreview: CardPreviewView;
 
 // получаем товары с сервера
 api
@@ -147,7 +150,7 @@ api
 // рендерим список товаров на странице
 events.on(CatalogEvents.CHANGED, (products: Product[]) => {
 	const content = products.map((product) => {
-		const card = new CardCatalog(cloneTemplate(cardCatalogTemplate), {
+		const card = new CardCatalogView(cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit(ModalEvents.PRODUCT_PREVIEW, product),
 		});
 
@@ -167,7 +170,7 @@ events.on(CatalogEvents.CHANGED, (products: Product[]) => {
 
 // открыт выбранный товар
 events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
-	productCardPreview = new CardPreview(cloneTemplate(cardPreviewTemplate), {
+	productCardPreview = new CardPreviewView(cloneTemplate(cardPreviewTemplate), {
 		onClick: () => events.emit(BasketEvents.ADD, product),
 	});
 
@@ -223,7 +226,7 @@ events.on(BasketEvents.CHANGED, (data: IBasketData) => {
 
 events.on(BasketEvents.CHANGED, (data: IBasketData) => {
 	const cardBasketItems = data.products.map((product, index) => {
-		const cardBasket = new CardBasket(cloneTemplate(cardBasketTemplate), {
+		const cardBasket = new CardBasketView(cloneTemplate(cardBasketTemplate), {
 			onCardButtonDeleteClick: () => events.emit(BasketEvents.REMOVE, product),
 		});
 

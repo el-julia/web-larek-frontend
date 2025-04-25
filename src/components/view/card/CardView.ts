@@ -15,7 +15,7 @@ export interface ICard {
 	description: string;
 }
 
-export abstract class Card<RenderData extends ICard> extends AView<RenderData> {
+export abstract class CardView<RenderData extends ICard> extends AView<RenderData> {
 	protected category: HTMLElement;
 	protected title: HTMLElement;
 	protected image: HTMLImageElement;

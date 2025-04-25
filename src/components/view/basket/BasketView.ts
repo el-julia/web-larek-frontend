@@ -14,7 +14,7 @@ interface IBasketView {
 	total: number;
 }
 
-export class Basket extends AView<IBasketView> {
+export class BasketView extends AView<IBasketView> {
 
 	protected basketList: HTMLElement;
 	protected basketTotal: HTMLElement;

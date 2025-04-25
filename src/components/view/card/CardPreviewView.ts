@@ -1,11 +1,11 @@
-import { Card, ICard } from './Card';
+import { CardView, ICard } from './CardView';
 import { Product } from '../../../types';
 
 export interface ICardPreview extends ICard {
 	basketProducts: Product[];
 }
 
-export class CardPreview extends Card<ICardPreview> {
+export class CardPreviewView extends CardView<ICardPreview> {
 	protected doRender(data: Partial<ICardPreview>) {
 		super.doRender(data);
 

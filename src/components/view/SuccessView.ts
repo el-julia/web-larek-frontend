@@ -9,7 +9,7 @@ export interface ISuccess {
 	total: number;
 }
 
-export class Success extends AView<ISuccess> {
+export class SuccessView extends AView<ISuccess> {
 	protected description: HTMLElement;
 	protected button: HTMLButtonElement;
 

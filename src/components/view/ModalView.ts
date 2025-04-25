@@ -9,7 +9,7 @@ interface IModalData {
 	content: HTMLElement;
 }
 
-export class Modal extends AView<IModalData> {
+export class ModalView extends AView<IModalData> {
 	protected closeButton: HTMLButtonElement;
 	protected content: HTMLElement;
 

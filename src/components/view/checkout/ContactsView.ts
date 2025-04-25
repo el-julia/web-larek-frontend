@@ -14,7 +14,7 @@ export interface IContact {
 	error: string;
 }
 
-export class Contacts extends AView<IContact> {
+export class ContactsView extends AView<IContact> {
 	protected emailInput: HTMLInputElement;
 	protected phoneInput: HTMLInputElement;
 	protected toPayButton: HTMLButtonElement;

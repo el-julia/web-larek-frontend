@@ -11,7 +11,7 @@ export interface ICardBasket {
 	price: number;
 }
 
-export class CardBasket extends AView<ICardBasket> {
+export class CardBasketView extends AView<ICardBasket> {
 	protected basketIndex: HTMLElement;
 	protected cardTitle: HTMLElement;
 	protected cardPrice: HTMLElement;

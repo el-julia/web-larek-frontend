@@ -9,7 +9,7 @@ interface ILarekApi {
 	orderProducts(order: IOrder): Promise<OrderResult>;
 }
 
-export class LarekApi extends Api implements ILarekApi {
+export class LarekApiModel extends Api implements ILarekApi {
 	readonly cdn: string;
 
 	constructor(cdn: string, baseUrl: string, options?: RequestInit) {

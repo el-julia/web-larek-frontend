@@ -11,7 +11,7 @@ export interface IPageActions {
 	onBasketClick: (event: MouseEvent) => void;
 }
 
-export class Page extends AView<IPage> {
+export class PageView extends AView<IPage> {
 	protected wrapper: HTMLElement;
 	protected counter: HTMLElement;
 	protected catalog: HTMLElement;

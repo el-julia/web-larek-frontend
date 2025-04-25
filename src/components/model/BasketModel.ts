@@ -7,7 +7,7 @@ export interface IBasketData {
 	total: number;
 }
 
-export class Basket extends AModel {
+export class BasketModel extends AModel {
 	private products: Product[] = [];
 
 	getProducts(): Product[] {

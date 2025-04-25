@@ -8,7 +8,7 @@ export interface IContactsChange {
 	error: string;
 }
 
-export class Contacts extends AModel {
+export class ContactsModel extends AModel {
 	private _email = '';
 	private _phone = '';
 

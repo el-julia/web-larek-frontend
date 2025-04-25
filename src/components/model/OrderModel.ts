@@ -9,7 +9,7 @@ export interface IOrderChange {
 	error: string;
 }
 
-export class Order extends AModel {
+export class OrderModel extends AModel {
 	private _payment?: Payment;
 	private _address = '';
 
