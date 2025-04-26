@@ -21,8 +21,6 @@ export interface IOrder {
 	items: string[];
 }
 
-export type FormErrors = Partial<Record<keyof IOrder, string>>;
-
 export type Payment = 'card' | 'cash';
 
 export type ProductCategory = 'софт-скил' | 'хард-скил' | 'дополнительное' | 'кнопка' | string;
