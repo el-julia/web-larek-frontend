@@ -43,7 +43,7 @@ export class CardBasketView extends AView<ICardBasket> {
 		}
 
 		if (data.price !== undefined) {
-			this.setText(this.cardPrice, formatNumber(data.price));
+			this.setText(this.cardPrice, `${formatNumber(data.price)} синапсов`);
 		}
 
 		if (data.title !== undefined) {

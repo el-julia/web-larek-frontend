@@ -1,6 +1,7 @@
 import { AModel } from '../base/AModel';
 import { SuccessEvent } from '../events/SuccessEvent';
 
+// переименовать
 export interface ISuccess {
 	total: number;
 }
