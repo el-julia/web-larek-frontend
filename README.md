@@ -6,6 +6,9 @@
 
 - src/ — исходные файлы проекта
 - src/components/ — папка с JS компонентами
+- src/components/events — папка с событиями приложения
+- src/components/model — папка с моделями
+- src/components/view — папка с представлениями
 - src/components/base/ — папка с базовым кодом
 
 Важные файлы:
