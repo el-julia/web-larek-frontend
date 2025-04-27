@@ -61,7 +61,7 @@ const successModel = new SuccessModel(events);
 const modalModel = new ModalModel(events);
 
 const modal = new ModalView(ensureElement<HTMLElement>('#modal-container'), {
-	onClose: () => events.emit(ModalEvents.CLOSE),
+	onClose: () => modalModel.close(),
 });
 
 const basket = new BasketView(cloneTemplate(basketTemplate), {
