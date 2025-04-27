@@ -41,4 +41,17 @@ export class BasketModel extends AModel {
 			total: this.getTotal(),
 		} as IBasketData);
 	}
+
+	isAddedToCart(product?: Product) {
+		if (product) {
+			const basketProducts = this.getProducts();
+			return (
+				basketProducts.find((basketProduct) => {
+					return basketProduct.id === product.id;
+				}) !== undefined
+			);
+		}
+
+		return false;
+	}
 }

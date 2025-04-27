@@ -136,6 +136,7 @@ const contacts = new ContactsView(cloneTemplate(contactsTemplate), {
 });
 
 let productCardPreview: CardPreviewView;
+let productCardPreviewProduct: Product;
 
 // получаем товары с сервера
 api
@@ -173,6 +174,7 @@ events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
 	productCardPreview = new CardPreviewView(cloneTemplate(cardPreviewTemplate), {
 		onClick: () => events.emit(BasketEvents.ADD, product),
 	});
+	productCardPreviewProduct = product;
 
 	modal.render({
 		content: productCardPreview.render({
@@ -182,7 +184,7 @@ events.on(ModalEvents.PRODUCT_PREVIEW, (product: Product) => {
 			image: product.image,
 			description: product.description,
 			price: product.price,
-			basketProducts: basketModel.getProducts(),
+			isInBasket: basketModel.isAddedToCart(product),
 		}),
 	});
 	modalModel.open();
@@ -216,10 +218,11 @@ events.on(BasketEvents.CHANGED, (data: IBasketData) => {
 	})
 });
 
-events.on(BasketEvents.CHANGED, (data: IBasketData) => {
+
+events.on(BasketEvents.CHANGED, () => {
 	if (productCardPreview !== undefined) {
 		productCardPreview.render({
-			basketProducts: data.products,
+			isInBasket: basketModel.isAddedToCart(productCardPreviewProduct),
 		});
 	}
 });

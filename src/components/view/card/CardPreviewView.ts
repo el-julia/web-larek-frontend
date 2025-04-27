@@ -1,8 +1,7 @@
 import { CardView, ICard } from './CardView';
-import { Product } from '../../../types';
 
 export interface ICardPreview extends ICard {
-	basketProducts: Product[];
+	isInBasket: boolean;
 }
 
 export class CardPreviewView extends CardView<ICardPreview> {
@@ -14,25 +13,12 @@ export class CardPreviewView extends CardView<ICardPreview> {
 		} else {
 			// если в товарах корзины найден товар карточки, тогда
 			// отключаем кнопку добавления и меняем текст
-			if (this.isAddedToCart(data)) {
+			if (data.isInBasket) {
 				this.setButtonState(false, 'Уже в корзине');
 			} else {
 				this.setButtonState(true, 'В корзину');
 			}
 		}
-	}
-
-	private isAddedToCart(data: Partial<ICardPreview>) {
-		if (data.basketProducts !== undefined && data.id !== undefined) {
-			// проверяем что какой-то из товаров в корзине совпадает с нашим по id
-			return (
-				data.basketProducts.find(
-					(cartProduct) => cartProduct.id === data.id
-				) !== undefined
-			);
-		}
-
-		return false;
 	}
 
 	private setButtonState(enabled: boolean, text: string) {
