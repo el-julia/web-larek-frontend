@@ -270,7 +270,7 @@ events.on(ModalEvents.SUCCESS, () => {
 });
 
 events.on(ModalEvents.NONE, () => {
-	modal.close();
+	modalModel.close();
 });
 
 events.on(ModalEvents.OPEN, () => {
